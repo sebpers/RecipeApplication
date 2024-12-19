@@ -16,6 +16,11 @@ namespace Api.AutoMapper
 
             // Map user to UserDto
             CreateMap<User, UserDto>();
+
+            // Map user to AuthorDto...
+            CreateMap<User, AuthorDto>();
+            CreateMap<User, AuthorLimitedListInfoDto>();
+            
         }
     }
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Recipe from "./Recipe";
-import { getRecipesListInformation } from "../../services/recipeService";
-import RecipeListInformation from "../../types/recipeListInformation";
-import FilterRecipeList from "../filter/FilterRecipeList";
+import { getRecipesListInformation } from "../../services/RecipeService";
+import RecipeListInformation from "../../types/RecipeListInformation";
+import FilterRecipeListComponent from "../filter/FilterRecipeListComponent";
 
 const RecipesList = () => {
   const [recipes, setRecipes] = useState<RecipeListInformation[]>([]);
@@ -10,33 +10,41 @@ const RecipesList = () => {
     RecipeListInformation[]
   >([]);
 
+  const fetchRecipeListInformation = async () => {
+    const result: RecipeListInformation[] = await getRecipesListInformation();
+
+    setRecipes(result);
+    setFilteredRecipes(result);
+  };
+
   useEffect(() => {
-    const recipeListInformation = async () => {
-      const result: RecipeListInformation[] = await getRecipesListInformation();
-
-      setRecipes(result);
-      setFilteredRecipes(result);
-    };
-
-    recipeListInformation();
+    fetchRecipeListInformation();
   }, []);
+
+  const updateRecipeListAfterDelete = async () => {
+    await fetchRecipeListInformation();
+  };
 
   return (
     <div className="container flex flex-col p-4">
       <div className="flex justify-center">
-        <FilterRecipeList
+        <FilterRecipeListComponent
           recipes={recipes}
           setFilteredRecipes={setFilteredRecipes}
         />
       </div>
-
+      {/* Implement pagination */}
       <div className="flex flex-wrap justify-center items-start space-x-10">
         {filteredRecipes?.length ? (
           filteredRecipes.map((r: RecipeListInformation) => (
-            <Recipe recipe={r} key={r.id} />
+            <Recipe
+              recipe={r}
+              key={r.id}
+              updateRecipeListAfterDelete={updateRecipeListAfterDelete}
+            />
           ))
         ) : (
-          <i className="mt-5">No recipes created yet...</i>
+          <p className="mt-5 italic">No recipes created yet...</p>
         )}
       </div>
     </div>

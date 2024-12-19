@@ -1,13 +1,10 @@
 ﻿using Api.Data;
 using Api.Dtos;
-using Api.Dtos.Recipe;
 using Api.Entities;
 using Api.Jwt;
-using Api.Mapper;
 using Api.Requests.Authentication;
 using Api.Requests.Registration;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +21,6 @@ namespace Api.Controllers
         private readonly JwtHandler _jwtHandler;
         private readonly ApplicationDbContext _context;
 
-        //! Split into services/repo
         public AccountsController(
             UserManager<User> userManager,
             IMapper mapper,
@@ -37,6 +33,8 @@ namespace Api.Controllers
             _jwtHandler = jwtHandler;
             _context = context;
         }
+        
+
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequest userForRegistration)
@@ -45,6 +43,8 @@ namespace Api.Controllers
             {
                 return BadRequest();
             }
+
+
 
             User userModel = _mapper.Map<User>(userForRegistration);
             var result = await _userManager.CreateAsync(userModel, userForRegistration.Password);
@@ -56,7 +56,16 @@ namespace Api.Controllers
                 return BadRequest(errors);
             }
 
-            await _userManager.AddToRoleAsync(userModel, "Visitor");
+            string[] validRoles = ["Visitor", "Author", "Admin"];
+
+            if (validRoles.Contains(userForRegistration.Role)) // Temporary until roles are removed from registration
+            {
+                await _userManager.AddToRoleAsync(userModel, userForRegistration.Role); // Should be "Visitor" instead of "userForRegistration.Role" if roles from registration are removed
+            }
+            else
+            {
+                await _userManager.AddToRoleAsync(userModel, "Visitor");
+            }
 
             IList<string>? roles = await _userManager.GetRolesAsync(userModel);
             string? token = _jwtHandler.CreateToken(userModel, roles);
@@ -129,17 +138,10 @@ namespace Api.Controllers
             var userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var isAuthenticated = claimsPrincipal.Identity?.IsAuthenticated;
             var roles = claimsPrincipal.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-            // Extract firstName and lastName from the claims
             var id = claimsPrincipal.FindFirst("id")?.Value;
             var firstName = claimsPrincipal.FindFirst("firstName")?.Value;
             var lastName = claimsPrincipal.FindFirst("lastName")?.Value;
             var description = claimsPrincipal.FindFirst("description")?.Value;
-
-            List<Recipe>? recipes = _context.Recipes
-                .Where(r => r != null && r.UserId == id && !roles.Contains("Visitor"))
-                .ToList();
-
-            List<RecipeDto>? recipeDtos = recipes.Select(r => r.ToRecipeDto()).ToList();
 
             var user = new
             {
@@ -150,11 +152,10 @@ namespace Api.Controllers
                 UserId = userId,
                 Roles = roles,
                 IsAuthenticated = isAuthenticated,
-                Description = description,
-                Recipes = recipeDtos
+                Description = description
             };
 
-            return Ok(user);  // Return user info
+            return Ok(user);
         }
 
         [HttpGet("validate")]

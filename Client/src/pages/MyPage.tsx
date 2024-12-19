@@ -1,15 +1,31 @@
 import profile1 from "../assets/profile1.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Recipe from "../components/recipes/Recipe";
 import useAuth from "../hooks/auth/useAuth";
 import CreateRecipePage from "./CreateRecipePage";
-
-// Split into multiple components
+import { getMyRecipes } from "../services/RecipeService";
 
 const MyPage = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("description");
-  const [showCreateRecipeForm, setShowCreateRecipeForm] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("description");
+  const [showCreateRecipeForm, setShowCreateRecipeForm] =
+    useState<boolean>(false);
+  const [recipes, setRecipes] = useState([]);
+
+  const fetchRecipes = async () => {
+    if (user?.id) {
+      try {
+        const result = await getMyRecipes(user?.id);
+        setRecipes(result);
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchRecipes();
+  }, [user?.id]);
 
   const classes = {
     button: "focus:outline-none",
@@ -24,8 +40,11 @@ const MyPage = () => {
 
   const onSetActiveTab = (text: string) => {
     setActiveTab(text);
-
     setShowCreateRecipeForm(false);
+  };
+
+  const updateRecipeListAfterDelete = async () => {
+    await fetchRecipes();
   };
 
   return (
@@ -67,15 +86,27 @@ const MyPage = () => {
           </button>
         </div>
       </div>
-      {showCreateRecipeForm && <CreateRecipePage />}
+      {showCreateRecipeForm && (
+        <CreateRecipePage onSetActiveTab={onSetActiveTab} />
+      )}
 
       <main className="mt-5">
         <section className="w-auto justify-items-center">
-          <article className="max-w-screen-md flex flex-col">
+          <article className="max-w-screen-md flex flex-col ">
             {activeTab === "description" && (
               <>
-                <h1 className={classes.h1}>My story</h1>
-                <p className="mt-4 italic">{user?.description}</p>
+                <h1
+                  className={`flex justify-center items-center ${classes.h1}`}
+                >
+                  My story
+                </h1>
+                <div className="mt-4 italic mx-auto">
+                  {user?.description ? (
+                    user?.description
+                  ) : (
+                    <p>Nothing here to tell...</p>
+                  )}
+                </div>
               </>
             )}
 
@@ -94,12 +125,18 @@ const MyPage = () => {
                 </div>
                 {
                   <div className="flex flex-wrap justify-center items-start space-x-10">
-                    {user?.recipes?.length ? (
-                      user?.recipes?.map((r) => (
-                        <Recipe recipe={r} key={r.id} />
+                    {recipes?.length ? (
+                      recipes?.map((r) => (
+                        <Recipe
+                          recipe={r}
+                          key={r.id}
+                          updateRecipeListAfterDelete={
+                            updateRecipeListAfterDelete
+                          }
+                        />
                       ))
                     ) : (
-                      <i className="mt-5">No recipes created yet...</i>
+                      <p className="mt-5 italic">No recipes created yet...</p>
                     )}
                   </div>
                 }
@@ -109,7 +146,7 @@ const MyPage = () => {
             {activeTab === "messages" && (
               <>
                 <h1 className={classes.h1}>Messages </h1>
-                <p className="mt-4">My messages.....</p>
+                <p className="mt-4 mx-auto italic">My messages.....</p>
               </>
             )}
           </article>

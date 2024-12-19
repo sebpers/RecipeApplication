@@ -6,7 +6,6 @@ using Api.Interfaces.Service;
 using Api.Jwt;
 using Api.Repository;
 using Api.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -43,6 +42,7 @@ builder.Services.AddScoped<IUserRecipeFavoriteRepository, UserRecipeFavoriteRepo
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserRecipeFavoriteService, UserRecipeFavoriteService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // Add identity for user (inherited by Role class)
 builder.Services.AddIdentity<User, Role>(option =>

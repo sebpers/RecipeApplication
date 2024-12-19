@@ -1,16 +1,25 @@
 import RecipeImageComponent from "./card/RecipeImageComponent";
 import RecipeCardComponent from "./card/RecipeCardComponent";
-import RecipeCardAuthorBadge from "./card/RecipeCardAuthorBadge";
-import RecipeCardTitle from "./card/RecipeCardTitle";
+import RecipeCardAuthorBadgeComponent from "./card/RecipeCardAuthorBadgeComponent";
+import CardTitleComponent from "../common/card/CardTitleComponent";
+import RecipeListInformation from "../../types/RecipeListInformation";
 
-const Recipe = ({ recipe }) => {
+interface RecipeProps {
+  updateRecipeListAfterDelete(): void;
+  recipe: RecipeListInformation;
+}
+
+const Recipe = ({ recipe, updateRecipeListAfterDelete }: RecipeProps) => {
   const { id, title, author, userId } = recipe;
 
   return (
     <RecipeCardComponent recipeId={id}>
-      <RecipeImageComponent userId={userId} recipeId={id} />
-      <RecipeCardTitle title={title} />
-      <RecipeCardAuthorBadge userId={userId} author={author} />
+      <RecipeImageComponent
+        recipeId={id}
+        updateRecipeListAfterDelete={updateRecipeListAfterDelete}
+      />
+      <CardTitleComponent title={title} />
+      <RecipeCardAuthorBadgeComponent userId={userId} author={author} />
     </RecipeCardComponent>
   );
 };

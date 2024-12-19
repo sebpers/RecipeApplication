@@ -5,7 +5,6 @@ using Api.Jwt;
 using Api.Requests.Recipe;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Api.Controllers
 {
@@ -43,6 +42,20 @@ namespace Api.Controllers
             }
 
             return Ok(recipeDto);
+        }
+
+        [Route("my-recipes/{userId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetRecipesByUserId([FromRoute] string userId)
+        {
+            List<RecipeDto?>? recipeDtos = await _recipeService.GetRecipesByUserId(userId);
+
+            if (recipeDtos == null || recipeDtos.Count == 0)
+            {
+                return Ok(new List<RecipeDto?>());
+            }
+
+            return Ok(recipeDtos);
         }
 
 
@@ -92,37 +105,33 @@ namespace Api.Controllers
         {
             try
             {
-                //var token = Request.Cookies["authToken"];
+                var token = Request.Cookies["authToken"];
 
-                //if (string.IsNullOrEmpty(token))
-                //{
-                //    return Unauthorized(new { message = "Token is missing" });
-                //}
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(new { message = "Token is missing" });
+                }
 
-                //var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
-                //if (claimsPrincipal == null)
-                //{
-                //    return Unauthorized(new { message = "Invalid or expired token" });
-                //}
+                var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
+                if (claimsPrincipal == null)
+                {
+                    return Unauthorized(new { message = "Invalid or expired token" });
+                }
 
-                //var roles = claimsPrincipal.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-                //var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
-                RecipeDto? recipeDto = await _recipeService.DeleteAsync(id, User);
+                RecipeDto? recipeDto = await _recipeService.DeleteAsync(id, claimsPrincipal);
 
                 if (recipeDto == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(recipeDto);
+                return Ok(new { deleted = true, message = "Item deleted successfully" });
 
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-            
-            
         }
     }
 }

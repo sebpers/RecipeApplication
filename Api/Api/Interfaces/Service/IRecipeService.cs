@@ -11,6 +11,7 @@ namespace Api.Interfaces.Service
         Task<List<RecipeDto>> GetAllAsync();
         Task<List<RecipeListInformationDto>> GetRecipeListInformation();
         Task<RecipeDto?> GetByIdAsync(int id);
+        Task<List<RecipeDto?>?> GetRecipesByUserId(string id);
         Task<RecipeDto?> UpdateAsync(UpdateRecipeRequest request, int id);
         Task<RecipeDto> CreateAsync(CreateRecipeRequest request);
         Task<RecipeDto?> DeleteAsync(int id, ClaimsPrincipal currentUser);

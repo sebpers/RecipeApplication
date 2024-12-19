@@ -20,5 +20,8 @@ namespace Api.Requests.Registration
         [Required(ErrorMessage = "Confirm password is required")]
         [Compare("Password", ErrorMessage = "The confirmation password do not match password")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required]
+        public string Role { get; set; } = string.Empty; // Temporary - remove when role is not supposed to be selected with registration
     }
 }

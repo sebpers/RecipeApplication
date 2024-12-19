@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import NavbarComponent from "../components/NavbarComponent";
 
-const Layout = () => {
+const LayoutPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <NavbarComponent />
 
       <div className="flex-grow">
         <div className="flex justify-center">
@@ -15,4 +15,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default LayoutPage;

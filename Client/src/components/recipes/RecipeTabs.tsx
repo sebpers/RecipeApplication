@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { getRecipeComments } from "../../services/commentService";
-import { RecipeComment } from "../../interfaces/recipeComment";
+import { getRecipeComments } from "../../services/CommentService";
+import { RecipeComment } from "../../interfaces/RecipeComment";
 import CommentCardComponent from "../comments/commentCard/CommentCardComponent";
 import AddCommentComponent from "../comments/AddCommentComponent";
 import SecondaryButtonComponent from "../common/buttons/SecondaryButtonComponent";
 import useAuth from "../../hooks/auth/useAuth";
 import RecipeTabButtons from "./tabs/RecipeTabButtons";
-import RecipeTabContent from "./tabs/RecipeTabContent";
+import RecipeTabContentComponent from "./tabs/RecipeTabContentComponent";
 
 interface TabProps {
   ingredients: string[] | undefined;
@@ -20,7 +20,6 @@ const RecipeTabs = (props: TabProps) => {
   const [addCommentIsOpen, setAddCommentIsOpen] = useState<boolean>(false);
 
   const { user } = useAuth();
-
   const { ingredients, instructions, recipeId } = props;
 
   const fetchComments = async () => {
@@ -65,7 +64,7 @@ const RecipeTabs = (props: TabProps) => {
         <RecipeTabButtons
           activeTab={activeTab}
           tabValue="Comments"
-          textTernary={
+          count={
             comments && comments?.length > 0 ? `(${comments?.length})` : ""
           }
           onSetActiveTab={onSetActiveTab}
@@ -75,20 +74,20 @@ const RecipeTabs = (props: TabProps) => {
       {/* Display content based on active tab */}
       <div>
         {activeTab === "Ingredients" ? (
-          <RecipeTabContent
+          <RecipeTabContentComponent
             contentArray={ingredients ?? []}
             classes="list-disc"
           />
         ) : activeTab === "Instructions" ? (
-          <RecipeTabContent
+          <RecipeTabContentComponent
             contentArray={instructions ?? []}
             classes="list-decimal"
           />
         ) : activeTab === "Comments" ? (
           <div className="my-5">
-            {user?.isAuthenticated && (
+            {user?.isAuthenticated && !addCommentIsOpen && (
               <SecondaryButtonComponent
-                text={addCommentIsOpen ? "Close" : "+ Comment"}
+                text="+ Comment"
                 onClickFunc={toggleAddComment}
               />
             )}

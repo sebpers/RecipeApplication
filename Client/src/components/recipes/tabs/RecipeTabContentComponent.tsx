@@ -3,7 +3,7 @@ interface RecipeTabContentProps {
   classes?: string;
 }
 
-const RecipeTabContent = (props: RecipeTabContentProps) => {
+const RecipeTabContentComponent = (props: RecipeTabContentProps) => {
   const { contentArray, classes } = props;
 
   return (
@@ -17,4 +17,4 @@ const RecipeTabContent = (props: RecipeTabContentProps) => {
   );
 };
 
-export default RecipeTabContent;
+export default RecipeTabContentComponent;

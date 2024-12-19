@@ -13,13 +13,13 @@ interface ListInputComponentProps {
 const ListInputComponent = (props: ListInputComponentProps) => {
   const { labelName, fieldName, listItems, onListChange } = props;
 
-  const [listItem, setListItem] = useState<string>(""); // Track the current input
-  const [editingIndex, setEditingIndex] = useState<number | null>(null); // Track the index of the item being edited
-  const [error, setError] = useState<string | null>(null); // Track validation error
+  const [listItem, setListItem] = useState<string>("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleListItemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setListItem(e.target.value);
-    if (error) setError(null); // Clear validation error on input change
+    if (error) setError(null);
   };
 
   const addListItem = () => {
@@ -27,15 +27,18 @@ const ListInputComponent = (props: ListInputComponentProps) => {
       setError(`Please enter a ${labelName.toLowerCase()}.`);
       return;
     }
-    const updatedList = [...listItems, listItem];
-    onListChange(fieldName, updatedList); // Notify parent
-    setListItem(""); // Clear input field
-    setError(null); // Clear validation error
+
+    const updatedList: string[] = [...listItems, listItem];
+
+    onListChange(fieldName, updatedList);
+    setListItem("");
+    setError(null);
   };
 
   const handleDelete = (index: number) => {
-    const updatedList = listItems.filter((_, i) => i !== index);
-    onListChange(fieldName, updatedList); // Notify parent
+    const updatedList: string[] = listItems.filter((_, i) => i !== index);
+
+    onListChange(fieldName, updatedList);
   };
 
   const handleEdit = (index: number) => {
@@ -48,20 +51,22 @@ const ListInputComponent = (props: ListInputComponentProps) => {
       setError(`Please enter a ${labelName.toLowerCase()}.`);
       return;
     }
-    const updatedList = listItems.map((item, index) =>
+
+    const updatedList: string[] = listItems.map((item, index) =>
       index === editingIndex ? listItem : item
     );
-    onListChange(fieldName, updatedList); // Notify parent
-    setEditingIndex(null); // Exit edit mode
-    setListItem(""); // Clear input
-    setError(null); // Clear validation error
+
+    onListChange(fieldName, updatedList);
+    setEditingIndex(null);
+    setListItem("");
+    setError(null);
   };
 
   // Prevent form submission on Enter key press
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission when Enter is pressed
-      addListItem(); // Add the item to the list
+      e.preventDefault();
+      addListItem();
     }
   };
 
@@ -84,7 +89,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
         {editingIndex === null ? (
           <button
             type="button"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-green-500 text-white px-4 py-2 rounded"
             onClick={addListItem}
           >
             Add
@@ -92,7 +97,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
         ) : (
           <button
             type="button"
-            className="bg-green-500 text-white px-4 py-2 rounded"
+            className="bg-orange-500 text-white px-4 py-2 rounded"
             onClick={handleSave}
           >
             Save

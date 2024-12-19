@@ -1,46 +1,58 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 
-import { getById } from "../../services/recipeService.ts";
-import Recipe from "../../types/recipe.tsx";
+import { getById } from "../../services/RecipeService.ts";
+import Recipe from "../../types/Recipe.tsx";
 import RecipeTabs from "./RecipeTabs.tsx";
-import RecipeCardTitle from "./card/RecipeCardTitle.tsx";
 import RecipeCardDescription from "./card/RecipeCardDescription.tsx";
-import RecipeCardAuthorBadge from "./card/RecipeCardAuthorBadge.tsx";
+import RecipeCardAuthorBadgeComponent from "./card/RecipeCardAuthorBadgeComponent.tsx";
 import RecipeImageComponent from "./card/RecipeImageComponent.tsx";
+import CardTitleComponent from "../common/card/CardTitleComponent.tsx";
 
 const RecipeView = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const { id } = useParams();
+  const navigate: NavigateFunction = useNavigate();
+
+  const fetchRecipeListInformation = async () => {
+    try {
+      if (id) {
+        const result: Recipe = await getById(id.toString());
+        setRecipe(result);
+      }
+    } catch (error) {
+      console.error("Error fetching recipe:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        if (id) {
-          const result: Recipe = await getById(id.toString());
+    fetchRecipeListInformation();
+  }, []);
 
-          setRecipe(result);
-        }
-      } catch (error) {
-        console.error("Error fetching recipe:", error);
-      }
-    };
-
-    fetchRecipe();
-  }, [id]);
+  const navigateAway = async () => {
+    navigate("/");
+  };
 
   return (
     <div className="border shadow-lg my-6 w-2/4 h-auto pb-2">
-      <RecipeImageComponent recipeId={recipe?.id} authorId={recipe?.userId} />
+      <RecipeImageComponent
+        recipeId={recipe?.id}
+        authorId={recipe?.userId}
+        updateRecipeListAfterDelete={navigateAway}
+      />
+
       <div className="p-3">
-        <RecipeCardTitle title={recipe?.title} />
+        <CardTitleComponent title={recipe?.title} />
+
         <RecipeCardDescription description={recipe?.description} />
+
         <RecipeTabs
           ingredients={recipe?.ingredients}
           instructions={recipe?.instructions}
           recipeId={recipe?.id}
         />
-        <RecipeCardAuthorBadge
+
+        <RecipeCardAuthorBadgeComponent
           author={recipe?.author}
           userId={recipe?.userId}
         />

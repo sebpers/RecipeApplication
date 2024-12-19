@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 
-const RecipeCardComponent = ({ children, recipeId }) => {
+interface RecipeCardProps {
+  children: React.ReactNode;
+  recipeId: number;
+}
+
+const RecipeCardComponent = ({ children, recipeId }: RecipeCardProps) => {
   return (
     <Link
       to={`/recipes/recipe/${recipeId}`}

@@ -1,4 +1,4 @@
-import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+import { Link, NavigateFunction, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import useRole from "../hooks/useRole";
 import { VscAccount } from "react-icons/vsc";
@@ -7,22 +7,24 @@ import { GiNewspaper } from "react-icons/gi";
 import { TbToolsKitchen3 } from "react-icons/tb";
 import { PiChefHatLight } from "react-icons/pi";
 
-const Navbar = () => {
+const NavbarComponent = () => {
   const navigate: NavigateFunction = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { role, provideRole } = useRole();
   const { isAuthenticated, logout } = useAuth();
-  const dropdownRef = useRef<HTMLDivElement | null>(null); // Reference to the dropdown menu
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Toggle the dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Close dropdown if click is outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        event.target instanceof Node &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setIsDropdownOpen(false);
       }
     };
@@ -48,25 +50,46 @@ const Navbar = () => {
       <div>{isAuthenticated}</div>
 
       <ul className="px-10 h-auto flex space-x-6 justify-center items-center">
-        <Link to="/">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `${
+              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
+            } text-lg hover:text-gray-900`
+          }
+        >
           <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
             <GiNewspaper size="25" className="mr-1" /> News
           </li>
-        </Link>
+        </NavLink>
 
-        <Link to="/recipes">
+        <NavLink
+          to="/recipes"
+          className={({ isActive }) =>
+            `${
+              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
+            } text-lg hover:text-gray-900`
+          }
+        >
           <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
             <TbToolsKitchen3 size="25" className="mr-1" /> Recipes
           </li>
-        </Link>
+        </NavLink>
 
-        <Link to="/authors">
+        <NavLink
+          to="/authors"
+          className={({ isActive }) =>
+            `${
+              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
+            } text-lg hover:text-gray-900`
+          }
+        >
           <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
             <PiChefHatLight size="25" className="mr-1" /> Chefs
           </li>
-        </Link>
+        </NavLink>
 
-        {/* User Dropdown if Logged In */}
+        {/* User Dropdown shown if Logged In */}
         {isAuthenticated ? (
           <li className="relative mt-1">
             <button
@@ -76,18 +99,17 @@ const Navbar = () => {
               <VscAccount size="25" />
             </button>
 
-            {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div
-                className="absolute top-8 right-0 w-48 bg-white shadow-lg rounded-md py-2"
+                className="z-50 absolute top-8 right-0 w-48 bg-white shadow-lg rounded-md py-2"
                 ref={dropdownRef}
               >
-                <ul>
+                <ul onClick={toggleDropdown}>
                   <Link to="/my">
                     <li className="px-4 py-2 hover:bg-gray-100">Account</li>
                   </Link>
 
-                  <Link to="/settings">
+                  <Link to="/favorites">
                     <li className="px-4 py-2 hover:bg-gray-100">Favorites</li>
                   </Link>
 
@@ -115,4 +137,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarComponent;

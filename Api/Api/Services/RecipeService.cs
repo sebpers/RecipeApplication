@@ -5,7 +5,6 @@ using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Mapper;
 using Api.Requests.Recipe;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -51,6 +50,34 @@ namespace Api.Services
             return recipeModel.ToRecipeDto();
         }
 
+        public async Task<List<RecipeDto?>?> GetRecipesByUserId(string userId)
+        {
+            User userModel = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userModel == null)
+            {
+                return null;
+            }
+
+            bool NotValidRole = !await _userManager.IsInRoleAsync(userModel, "Admin") && !await _userManager.IsInRoleAsync(userModel, "Author");
+
+            if (NotValidRole)
+            {
+                throw new UnauthorizedAccessException("You do not have permission to fetch these recipes.");
+            }
+
+            List<Recipe> recipeModel = await _recipeRepo.GetRecipesByUserId(userId);
+
+            if (recipeModel == null || !recipeModel.Any())
+            {
+                return null;
+            }
+
+            List<RecipeDto?>? recipeDtos = recipeModel.Select(r => r.ToRecipeDto()).ToList();
+
+            return recipeDtos;
+        }
+
         public async Task<RecipeDto?> UpdateAsync(UpdateRecipeRequest request, int id)
         {
             Recipe recipeModel = await _recipeRepo.GetByIdAsync(id);
@@ -72,7 +99,6 @@ namespace Api.Services
 
         public async Task<RecipeDto> CreateAsync(CreateRecipeRequest request)
         {
-            // Get the user from the database using userId
             var user = await _userManager.FindByIdAsync(request.UserId);
 
             if (user == null)
@@ -101,22 +127,17 @@ namespace Api.Services
             {
                 return null;
             }
-            
-            // !! Get the user's ID and roles from the claims // USER IS NOT WORKING this way..- 
 
-
-            var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier); // or your custom claim name for user ID
+            var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRoles = currentUser.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
             // Authorization logic: check if user is admin or the author of the recipe
             if (!userRoles.Contains("Admin") && recipeToDelete.UserId != userId)
             {
-                // User is not authorized to delete the recipe
                 throw new UnauthorizedAccessException("You do not have permission to delete this recipe.");
             }
 
-
-            var deletedRecipe = await _recipeRepo.DeleteAsync(recipeToDelete);
+            Recipe? deletedRecipe = await _recipeRepo.DeleteAsync(recipeToDelete);
 
             return deletedRecipe.ToRecipeDto();
         }

@@ -2,10 +2,8 @@ import profile1 from "../assets/profile1.png";
 import { FaHeart } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getVisitedAuthorById } from "../services/userService";
+import { getVisitedAuthorById } from "../services/UserService";
 import Recipe from "../components/recipes/Recipe";
-
-// Split into multiple components
 
 interface User {
   id: string;

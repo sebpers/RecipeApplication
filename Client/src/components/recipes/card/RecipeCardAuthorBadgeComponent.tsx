@@ -5,13 +5,12 @@ type PropsUserIdType = {
   author: string | undefined;
 };
 
-const RecipeCardAuthorBadge = (props: PropsUserIdType) => {
+const RecipeCardAuthorBadgeComponent = (props: PropsUserIdType) => {
   const navigate = useNavigate();
   const { userId, author } = props;
 
   const handleAuthorClick = (e) => {
     e.preventDefault(); // Prevent the wrapper-Link from being triggered
-
     navigate(`/author/${userId}`);
   };
 
@@ -22,4 +21,4 @@ const RecipeCardAuthorBadge = (props: PropsUserIdType) => {
   );
 };
 
-export default RecipeCardAuthorBadge;
+export default RecipeCardAuthorBadgeComponent;

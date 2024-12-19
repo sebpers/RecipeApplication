@@ -29,6 +29,15 @@ namespace Api.Repository
                 .FirstAsync(recipe => recipe.Id == id);
         }
 
+        public async Task<List<Recipe>> GetRecipesByUserId(string userId)
+        {
+            return await _context.Recipes
+                .Include(recipe => recipe.Comments)
+                .Include(recipe => recipe.User)
+                .Where(recipe => recipe.UserId == userId)
+                .ToListAsync();
+        }
+
         public async Task<Recipe?> UpdateAsync(Recipe recipeModel)
         {
             await _context.SaveChangesAsync();

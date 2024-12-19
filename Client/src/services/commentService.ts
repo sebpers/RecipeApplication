@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { RecipeComment } from '../interfaces/recipeComment';
-import { CommentCreate } from '../interfaces/commentCreate';
+import { RecipeComment } from '../interfaces/RecipeComment';
+import { CommentCreate } from '../interfaces/CommentCreate';
 
 const API_PREFIX = "http://localhost:5098/api/comments";
 
@@ -11,21 +11,19 @@ export const getRecipeComments = async (recipeId: number): Promise<RecipeComment
     })
     .catch(error => {console.error(error)});
 
-    if (!comments) { throw new Error(`with id ${recipeId} not found.`); }
+  if (!comments) { throw new Error(`with id ${recipeId} not found.`); }
 
-    return comments;
+  return comments;
 };
 
-  export const addComment = async (body: CommentCreate): Promise<RecipeComment> => {
-    console.log('body: ', body)
-    const comment: RecipeComment =  await axios.post(`${API_PREFIX}`, body)
-      .then(res => {
-        console.log('comment create: ', res);
-        return res.data;
-      })
-      .catch(error => {
-        console.error('ERROR: ', error)
-      });
+export const addComment = async (body: CommentCreate): Promise<RecipeComment> => {
+  const comment: RecipeComment =  await axios.post(`${API_PREFIX}`, body)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.error('ERROR: ', error)
+    });
 
-      return comment;
-  };
+  return comment;
+};

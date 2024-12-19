@@ -1,6 +1,4 @@
-﻿using Api.Data;
-using Api.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Api.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,10 +49,10 @@ namespace Api.Controllers
 
             return Unauthorized(new { message = "Not authenticated" });
         }
+
         [HttpGet("visit/{id}")]
         public async Task<IActionResult> GetVisitedUserAsync(string id)
         {
-            // get user...
             User? userModel = await _userManager.Users
                     .Include(u => u.Recipes)
                     .FirstOrDefaultAsync(u => u.Id == id);
