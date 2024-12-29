@@ -44,7 +44,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
   useEffect(() => {
     const result = hasRole(user, ["Author"], props.authorId);
     setIsRecipeAuthor(result);
-  }, [user]);
+  }, [props.authorId]);
 
   const handleEdit = () => {
     console.log("Action not implemented yet");
