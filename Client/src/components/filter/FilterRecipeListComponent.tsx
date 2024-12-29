@@ -27,7 +27,7 @@ const FilterRecipeListComponent = (props: {
   };
 
   return (
-    <div className="w-2/4 bg-red-500">
+    <div className="md:w-2/4 w-full bg-red-500">
       <input
         className="w-full border p-2"
         type="text"

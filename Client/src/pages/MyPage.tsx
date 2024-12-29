@@ -77,7 +77,7 @@ const MyPage = () => {
             Recipes
           </button>
           <button
-            onClick={() => setActiveTab("messages")}
+            onClick={() => onSetActiveTab("messages")}
             className={`${classes.button} ${
               activeTab === "messages" ? classes.active : classes.inactive
             }`}

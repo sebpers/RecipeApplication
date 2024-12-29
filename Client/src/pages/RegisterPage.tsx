@@ -6,6 +6,7 @@ import { register } from "../services/AuthService";
 import useRole from "../hooks/useRole";
 import Register from "../types/Register";
 import RadioButtons from "../components/common/RadioButtonsComponent";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 interface RegisterPage {
   firstName: string;
@@ -21,6 +22,9 @@ const RegisterPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<string>(""); // Temporary, just to make it easier with roles
 
   const { provideRole } = useRole();
@@ -81,8 +85,6 @@ const RegisterPage = () => {
     <>
       <AuthCardComponent>
         <form onSubmit={handleSubmit}>
-          <h1>Register</h1>
-
           <div className="flex flex-col mb-6">
             <input
               className="p-4 rounded rounded border border-2"
@@ -105,7 +107,7 @@ const RegisterPage = () => {
             <div>{fieldErrors("LastName")}</div>
           </div>
 
-          <div className="flex flex-col mb-6">
+          <div className="flex flex-col">
             <input
               className="p-4 rounded border border-2"
               type="text"
@@ -116,7 +118,7 @@ const RegisterPage = () => {
             <div>{fieldErrors("Email")}</div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-6">
             <CiCircleQuestion
               size={25}
               title="Password must include special characters, numbers and a capital letter"
@@ -124,27 +126,46 @@ const RegisterPage = () => {
             />
           </div>
 
-          <div className="flex flex-col mb-6">
+          <div className="flex items-center w-full">
             <input
-              className="p-4 rounded border border-2 "
-              type="password"
+              className="flex-grow p-4 mr-2 rounded border border-2 "
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div>{fieldErrors("Password")}</div>
+            <div>
+              {showPassword ? (
+                <FiEyeOff size="25" onClick={() => setShowPassword(false)} />
+              ) : (
+                <FiEye size="25" onClick={() => setShowPassword(true)} />
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="mb-6">{fieldErrors("Password")}</div>
+
+          <div className="flex items-center">
             <input
-              className="p-4 rounded border border-2"
-              type="password"
+              className="flex-grow p-4 mr-2 rounded border border-2"
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div>{fieldErrors("ConfirmPassword")}</div>
+            <div>
+              {showConfirmPassword ? (
+                <FiEyeOff
+                  size="25"
+                  onClick={() => setShowConfirmPassword(false)}
+                />
+              ) : (
+                <FiEye size="25" onClick={() => setShowConfirmPassword(true)} />
+              )}
+            </div>
           </div>
+
+          <div className="mb-6">{fieldErrors("ConfirmPassword")}</div>
 
           {/*  Temporary, just to make it easier with roles*/}
           <div className="flex flex-col mt-2">

@@ -24,7 +24,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
 
   const addListItem = () => {
     if (listItem.trim() === "") {
-      setError(`Please enter a ${labelName.toLowerCase()}.`);
+      setError(`Please enter ${labelName.toLowerCase()}.`);
       return;
     }
 
@@ -48,7 +48,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
 
   const handleSave = () => {
     if (listItem.trim() === "") {
-      setError(`Please enter a ${labelName.toLowerCase()}.`);
+      setError(`Please enter ${labelName.toLowerCase()}.`);
       return;
     }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAllAuthorsWithLimitedInfo } from "../../services/AuthorService";
 import AuthorCardComponent from "./card/AuthorCardComponent";
+import LoadingComponent from "../common/Loading/LoadingComponent";
 
 export interface AuthorLimitedInfo {
   id: string;
@@ -10,10 +11,13 @@ export interface AuthorLimitedInfo {
 
 const AuthorList = () => {
   const [authors, setAuthors] = useState<AuthorLimitedInfo[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getAuthorsToList = async () => {
+      setIsLoading(true);
       const data: AuthorLimitedInfo[] = await getAllAuthorsWithLimitedInfo();
+      setIsLoading(false);
 
       setAuthors(data);
     };
@@ -23,11 +27,15 @@ const AuthorList = () => {
 
   return (
     <div className="container flex justify-center">
-      <div className="flex flex-wrap justify-center items-start space-x-10">
-        {authors?.map((author) => (
-          <AuthorCardComponent author={author} key={author.id} />
-        ))}
-      </div>
+      {!isLoading ? (
+        <div className="flex flex-wrap justify-center items-start sm:justify-center">
+          {authors?.map((author) => (
+            <AuthorCardComponent author={author} key={author.id} />
+          ))}
+        </div>
+      ) : (
+        <LoadingComponent />
+      )}
     </div>
   );
 };

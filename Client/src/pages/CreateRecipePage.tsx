@@ -73,7 +73,7 @@ const CreateRecipePage = (props) => {
         ingredientsRequired:
           ingredients?.length === 0 && "Ingrediens are required",
         instructionsRequired:
-          instructions?.length === 0 && "instructions are required",
+          instructions?.length === 0 && "Instructions are required",
       });
 
       return;
