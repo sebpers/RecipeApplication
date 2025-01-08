@@ -33,7 +33,7 @@ namespace Api.Controllers
             _jwtHandler = jwtHandler;
             _context = context;
         }
-        
+
 
 
         [HttpPost("register")]
@@ -57,12 +57,18 @@ namespace Api.Controllers
             }
 
             string[] validRoles = ["Visitor", "Author", "Admin"];
-
-            if (validRoles.Contains(userForRegistration.Role)) // Temporary until roles are removed from registration
+            // These are temporary - Remove all except "Visitor" when actively selection role when registrating
+            if (validRoles.Contains(userForRegistration.Role) && userForRegistration.Role == "Admin")
             {
-                await _userManager.AddToRoleAsync(userModel, userForRegistration.Role); // Should be "Visitor" instead of "userForRegistration.Role" if roles from registration are removed
+                await _userManager.AddToRoleAsync(userModel, userForRegistration.Role);
             }
-            else
+
+            if (validRoles.Contains(userForRegistration.Role) && userForRegistration.Role == "Author")
+            {
+                await _userManager.AddToRoleAsync(userModel, userForRegistration.Role);
+            }
+
+            if (validRoles.Contains(userForRegistration.Role) && userForRegistration.Role == "Visitor")
             {
                 await _userManager.AddToRoleAsync(userModel, "Visitor");
             }
