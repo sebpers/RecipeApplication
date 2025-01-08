@@ -1,6 +1,8 @@
 using Api.AutoMapper;
 using Api.Data;
 using Api.Entities;
+using Api.Helpers;
+using Api.Interfaces.Helpers;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Jwt;
@@ -34,15 +36,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserRecipeFavoriteRepository, UserRecipeFavoriteRepository>();
 
 // Services
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserRecipeFavoriteService, UserRecipeFavoriteService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+
+// Helpers
+builder.Services.AddScoped<IClaimsHelper, ClaimsHelper>();
 
 // Add identity for user (inherited by Role class)
 builder.Services.AddIdentity<User, Role>(option =>
