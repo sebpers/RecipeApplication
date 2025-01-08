@@ -1,6 +1,5 @@
 import { Link, NavigateFunction, NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import useRole from "../hooks/useRole";
 import { VscAccount } from "react-icons/vsc";
 import useAuth from "../hooks/auth/useAuth";
 import { GiNewspaper } from "react-icons/gi";
@@ -10,8 +9,7 @@ import { PiChefHatLight } from "react-icons/pi";
 const NavbarComponent = () => {
   const navigate: NavigateFunction = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { role, provideRole } = useRole();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = () => {
@@ -40,16 +38,12 @@ const NavbarComponent = () => {
 
   const handleLogout = (): void => {
     logout();
-    provideRole([""]);
     navigate("/");
   };
 
   return (
     <nav className="shadow-md flex justify-center h-20 mb-5 bg-slate-100">
-      <div>{role && role}</div>
-      <div>{isAuthenticated}</div>
-
-      <ul className="px-10 h-auto flex space-x-6 justify-center items-center">
+      <ul className="md:px-10 h-auto flex space-x-6 justify-center items-center">
         <NavLink
           to="/"
           className={({ isActive }) =>
@@ -105,9 +99,11 @@ const NavbarComponent = () => {
                 ref={dropdownRef}
               >
                 <ul onClick={toggleDropdown}>
-                  <Link to="/my">
-                    <li className="px-4 py-2 hover:bg-gray-100">Account</li>
-                  </Link>
+                  {(user?.roles?.includes("Author") || user?.roles?.includes("Admin")) && (
+                    <Link to="/my">
+                      <li className="px-4 py-2 hover:bg-gray-100">Account</li>
+                    </Link>
+                  )}
 
                   <Link to="/favorites">
                     <li className="px-4 py-2 hover:bg-gray-100">Favorites</li>
