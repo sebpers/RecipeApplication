@@ -9,33 +9,47 @@ export const getById = async (id: number) => {
     })
 
     return response.data;
-  } catch (error: any) {
-    throw error.response?.data?.errors || error.response?.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data?.errors || error.response?.data || error.message;
+    }
+
+    throw new Error('An unexpected error occurred');
   }
 };
 
-export const getVisitedAuthorById = async (id: number) => {
+export const getVisitedAuthorById = async (id: string) => {
   try {
     const response = await axios.get(`${API_PREFIX}/visit/${id}`, {
       withCredentials: true
     })
     return response.data;
-  } catch (error: any) {
-    throw error.response?.data?.errors || error.response?.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data?.errors || error.response?.data || error.message;
+    }
+
+    throw new Error('An unexpected error occurred');
   }
 };
 
-//! Ongoing
-// export const updateDescription = async (body, id: string) => {
-//   try {
-//     if (id) {
-//       const result = await axios.put(`${API_PREFIX}/edit-description/${id}`, body, {
-//         withCredentials: true
-//       });
+export const updateDescription = async (description: string, id: string) => {
+  try {
+    if (id) {
+      const result = await axios.put(`${API_PREFIX}/my/edit/description/${id}`,
+        description,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true
+        }
+      );
 
-//       return result;
-//     }
-//   } catch (error) {
-//     console.error('ERROR: ', error)
-//   }
-// }
+      return result.data;
+    }
+  } catch (error) {
+    console.error('ERROR: ', error)
+    throw error;
+  }
+}

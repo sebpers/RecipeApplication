@@ -4,6 +4,9 @@ import Recipe from "../components/recipes/Recipe";
 import useAuth from "../hooks/auth/useAuth";
 import CreateRecipePage from "./CreateRecipePage";
 import { getMyRecipes } from "../services/RecipeService";
+import { updateDescription } from "../services/UserService";
+import SecondaryButtonComponent from "../components/common/buttons/SecondaryButtonComponent";
+import SubmitButtonComponent from "../components/common/buttons/SubmitButtonComponent";
 
 const MyPage = () => {
   const { user } = useAuth();
@@ -11,6 +14,9 @@ const MyPage = () => {
   const [showCreateRecipeForm, setShowCreateRecipeForm] =
     useState<boolean>(false);
   const [recipes, setRecipes] = useState([]);
+  const [showDescriptionDialog, setShowDescriptionDialog] = useState<boolean>(false);
+  const [originalDescription, setOriginalDescription] = useState<string | undefined>(user?.description);
+  const [description, setDescription] = useState<string | undefined>(user?.description);
 
   const fetchRecipes = async () => {
     if (user?.id) {
@@ -46,6 +52,23 @@ const MyPage = () => {
   const updateRecipeListAfterDelete = async () => {
     await fetchRecipes();
   };
+
+  const onCancelEditDescription = () => {
+    setDescription(originalDescription); // Reset to original value
+    setShowDescriptionDialog(false);
+  }
+
+  const onSaveDescription = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const descriptionToSave = description ?? ''; // Make it certain it's defined
+
+    if (user?.id) {
+      await updateDescription(descriptionToSave, user?.id);
+      setShowDescriptionDialog(false);
+    }
+  }
 
   return (
     <div className="container h-full shadow-xl rounded pt-10 p-5 flex flex-col">
@@ -86,13 +109,14 @@ const MyPage = () => {
           </button>
         </div>
       </div>
+
       {showCreateRecipeForm && (
         <CreateRecipePage onSetActiveTab={onSetActiveTab} />
       )}
 
       <main className="mt-5">
-        <section className="w-auto justify-items-center">
-          <article className="max-w-screen-md flex flex-col ">
+        <section className="w-full justify-items-center">
+          <article className="w-full max-w-screen-md flex flex-col ">
             {activeTab === "description" && (
               <>
                 <h1
@@ -100,13 +124,62 @@ const MyPage = () => {
                 >
                   My story
                 </h1>
+
                 <div className="mt-4 italic mx-auto">
-                  {user?.description ? (
-                    user?.description
-                  ) : (
-                    <p>Nothing here to tell...</p>
+                  {description && !showDescriptionDialog && (
+                    <>
+                      <div className="flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOriginalDescription(description); // Save the current value
+                            setShowDescriptionDialog(true);
+                          }}
+                          className="btn-blue-sm text-sm"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <p>{description}</p>
+                    </>
+                  )}
+
+                  {(!description && !showDescriptionDialog) && (
+                    <>
+                      <div className="flex justify-center">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOriginalDescription(description); // Save the current value
+                            setShowDescriptionDialog(true);
+                          }}
+                          className="btn-green-sm btn-green-sm:hover text-sm ml-5"
+                        >
+                          Add story
+                        </button>
+                      </div>
+                      <p>
+                        Nothing here to tell...
+                      </p>
+                    </>
                   )}
                 </div>
+
+                {showDescriptionDialog && (
+                  <form onSubmit={onSaveDescription} className="mx-auto md:w-2/4 w-full flex flex-col">
+                    <textarea
+                      placeholder="Tell vistors your story..."
+                      rows={6}
+                      className="w-full mx-auto p-2 bg-dark-500 border border-2"
+                      value={description}
+                      onChange={(e) => {setDescription(e.target.value)}}
+                      />
+                      <div className="flex justify-end space-x-5 mt-3">
+                        <SecondaryButtonComponent onClickFunc={onCancelEditDescription} />
+                        <SubmitButtonComponent />
+                      </div>
+                  </form>)
+                }
               </>
             )}
 
