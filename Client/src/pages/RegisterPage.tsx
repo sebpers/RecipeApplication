@@ -8,6 +8,8 @@ import Register from "../types/Register";
 import RadioButtons from "../components/common/RadioButtonsComponent";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
+import { toast } from "react-toastify";
+
 interface RegisterPage {
   firstName: string;
   lastName: string;
@@ -68,6 +70,7 @@ const RegisterPage = () => {
       if (response.isAuthSuccessful) {
         provideRole(response?.roles);
         navigate("/");
+        toast.success("Successfully registered.")
       }
     } catch (err) {
       setErrors(err);

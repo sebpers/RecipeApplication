@@ -3,6 +3,7 @@ import { useState } from "react";
 import { login } from "../services/AuthService";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/auth/useAuth";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -28,6 +29,7 @@ const LoginPage = () => {
       if (response.isAuthSuccessful) {
         setIsAuthenticated(true);
         navigate("/");
+        toast.success("Welcome")
       }
     } catch (err) {
       setError(err.response?.data?.errorMessage || "Something went wrong!");
