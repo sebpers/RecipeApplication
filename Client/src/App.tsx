@@ -11,8 +11,16 @@ import MyPage from "./pages/MyPage";
 import AuthProvider from "./context/auth/AuthProvider";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import AuthorListPage from "./pages/AuthorListPage";
+import { validateUserToken } from "./services/AuthService";
+import ProtectedRoute from "./helpers/protection/ProtectedRoute";
 
 function App() {
+const isAuthenticated = async (): Promise<boolean> => {
+  const response = await validateUserToken();
+
+  return response.status === 200;
+}
+
   return (
     <AuthProvider>
       <RoleProvider>
@@ -24,8 +32,16 @@ function App() {
               <Route path="recipes/recipe/:id" element={<RecipeView />} />
               <Route path="login" element={<AuthPage />} />
               <Route path="register" element={<AuthPage />} />
-              <Route path="my" element={<MyPage />} />
-              <Route path="my/create-recipe" element={<CreateRecipePage />} />
+
+              { /* Protected routes */}
+              <Route
+                path="my"
+                element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+              >
+                <Route index element={<MyPage />} />
+                <Route path="create-recipe" element={<CreateRecipePage />} />
+              </Route>
+
               <Route path="author/:id" element={<AccountPage />} />
               <Route path="authors" element={<AuthorListPage />} />
               <Route path="*" element={<NotFoundPage />} />
