@@ -70,9 +70,6 @@ dist/
 *.lock
 npm-debug.log*
 
-# Entity Framework Core migrations
-migrations/
-
 # Local SQL database files
 *.mdf
 *.ldf
