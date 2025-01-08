@@ -16,7 +16,7 @@ interface User {
 const AccountPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState<User>();
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState<string>("description");
 
   const classes = {
     button: "focus:outline-none",
@@ -26,7 +26,7 @@ const AccountPage = () => {
   };
 
   useEffect(() => {
-    const fetchUser = async (id) => {
+    const fetchUser = async (id: string) => {
       if (id) {
         try {
           const response = await getVisitedAuthorById(id);
@@ -38,7 +38,11 @@ const AccountPage = () => {
       }
     };
 
-    fetchUser(id);
+    if (id) {
+      fetchUser(id);
+    } else {
+      throw new Error("Error fetching user");
+    }
   }, [id]);
 
   return (

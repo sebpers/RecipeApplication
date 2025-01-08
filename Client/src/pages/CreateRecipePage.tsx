@@ -57,6 +57,7 @@ const CreateRecipePage = (props) => {
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+    e.stopPropagation()
 
     setErrors({});
 

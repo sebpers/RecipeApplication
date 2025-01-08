@@ -34,7 +34,7 @@ const RecipeView = () => {
   };
 
   return (
-    <div className="border shadow-lg my-6 w-2/4 max-w-screen-md min-w-full min-w-80	h-auto pb-2">
+    <div className="border shadow-lg my-6 m:w-2/4 h-auto pb-2 mx-auto">
       <RecipeImageComponent
         recipeId={recipe?.id}
         authorId={recipe?.userId}
