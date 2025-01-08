@@ -1,4 +1,6 @@
 ﻿using Api.Entities;
+using Api.Interfaces.Service;
+using Api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +12,12 @@ namespace Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        public UserController(UserManager<User> userManager)
+        private readonly IUserService _userService;
+
+        public UserController(UserManager<User> userManager, IUserService userService)
         {
             _userManager = userManager;
+            _userService = userService;
         }
 
         //[HttpGet]
@@ -68,6 +73,33 @@ namespace Api.Controllers
             }
 
             return Unauthorized(new { message = "Not authenticated" });
+        }
+
+        [HttpPut("my/edit/description/{userId}")]
+        public async Task<IActionResult> UpdateDescriptionAsync([FromBody] string description, [FromRoute] string userId)
+        {
+            var token = Request.Cookies["authToken"];
+
+            if (token == null)
+            {
+                return Unauthorized(new { message = "Not authenticated" });
+            }
+
+            bool isSameUser = await _userService.IsSameUser(userId, token);
+
+            if (!isSameUser && !_userService.IsLoggedInUserAdmin(token))
+            {
+                return Unauthorized(new { message = "Not authorized" });
+            }
+
+            User? user = await _userService.UpdateUserDescriptionAsync(description, userId);
+
+            if (user == null)
+            {
+                return NotFound("No user was found");
+            }
+
+            return Ok(new { user });
         }
     }
 }
