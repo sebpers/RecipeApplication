@@ -14,3 +14,34 @@
   color: whitesmoke;
   font-weight: 600;
 }
+
+@layer components {
+  .btn-blue {
+    @apply bg-blue-500 text-white py-2 px-4 rounded;
+  }
+  .btn-blue:hover {
+    @apply bg-blue-700;
+  }
+
+  .btn-blue-sm {
+    @apply bg-blue-500 text-white py-1 px-2 rounded text-sm;
+  }
+  .btn-blue-sm:hover {
+    @apply bg-blue-700;
+  }
+
+  .btn-green {
+    @apply bg-green-500 text-white py-2 px-4 rounded;
+  }
+
+  .btn-green-sm {
+    @apply bg-green-500 text-white py-1 px-2 rounded text-sm;
+  }
+  .btn-green-sm:hover {
+    @apply bg-green-700;
+  }
+
+  .btn-green:hover {
+    @apply bg-green-700;
+  }
+}
