@@ -60,7 +60,12 @@ namespace Api.Services
         {
             bool isAuthor = await _userManager.IsInRoleAsync(user, "Author");
 
-            return isAuthor;
+            bool adminHasRecipes = await _userManager.Users
+                .Where(u => u.Id == user.Id)
+                .Select(u => u.Recipes != null && u.Recipes.Any())
+                .FirstOrDefaultAsync();
+
+            return isAuthor || adminHasRecipes;
         }
     }
 }
