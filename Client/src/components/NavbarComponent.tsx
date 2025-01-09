@@ -99,7 +99,8 @@ const NavbarComponent = () => {
                 ref={dropdownRef}
               >
                 <ul onClick={toggleDropdown}>
-                  {(user?.roles?.includes("Author") || user?.roles?.includes("Admin")) && (
+                  {(user?.roles?.includes("Author") ||
+                    user?.roles?.includes("Admin")) && (
                     <Link to="/my">
                       <li className="px-4 py-2 hover:bg-gray-100">Account</li>
                     </Link>

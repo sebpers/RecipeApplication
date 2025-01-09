@@ -7,13 +7,18 @@ import RecipeListInformation from "../../types/RecipeListInformation";
 interface RecipeProps {
   updateRecipeListAfterDelete(): void;
   recipe: RecipeListInformation;
+  classes?: string;
 }
 
-const Recipe = ({ recipe, updateRecipeListAfterDelete }: RecipeProps) => {
+const Recipe = ({
+  recipe,
+  updateRecipeListAfterDelete,
+  classes,
+}: RecipeProps) => {
   const { id, title, author, userId } = recipe;
 
   return (
-    <RecipeCardComponent recipeId={id}>
+    <RecipeCardComponent recipeId={id} classes={classes}>
       <RecipeImageComponent
         recipeId={id}
         updateRecipeListAfterDelete={updateRecipeListAfterDelete}
