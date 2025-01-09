@@ -1,8 +1,9 @@
-﻿using Api.Entities;
-using Api.Helpers;
+﻿using Api.Dtos;
+using Api.Entities;
 using Api.Interfaces.Helpers;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
+using Api.Mapper;
 
 namespace Api.Services
 {
@@ -17,9 +18,8 @@ namespace Api.Services
             _claimsHelper = claimsHelper;
         }
 
-        public async Task<User?> UpdateUserDescriptionAsync(string description, string id)
+        public async Task<UserDto?> UpdateUserDescriptionAsync(string description, string id)
         {
-            // Turn to DTO
             User? userModel = await GetByIdAsync(id);
 
             if (userModel == null)
@@ -31,15 +31,30 @@ namespace Api.Services
 
             await _userRepository.UpdateUserDescriptionAsync(userModel);
 
-            return userModel;
+            return userModel.ToUserDto();
         }
 
         public async Task<User?> GetByIdAsync(string id)
         {
-            // Turn to DTO
             User? userModel = await _userRepository.GetByIdAsync(id);
 
             return userModel;
+        }
+
+        public async Task<UserWithRolesDto> GetUserWithRolesAsync(string id)
+        {
+            User? userModel = await _userRepository.GetByIdAsync(id);
+
+            if (userModel == null)
+            {
+                throw new Exception($"User do not exist with id: {userModel.Id}");
+            }
+
+            IList<string?> roles = await _userRepository.GetRolesByUserAsync(userModel);
+
+            UserWithRolesDto userWithRoles = userModel.ToUserWithRolesDto(roles);
+
+            return userWithRoles;
         }
 
         public async Task<bool> IsSameUser(string userId, string token)

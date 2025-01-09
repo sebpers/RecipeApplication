@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Api.Dtos
 {
-    public class UserDto
+    public class UserWithRolesDto
     {
         [Required]
         public string Id { get; set; } = string.Empty;
@@ -20,5 +20,7 @@ namespace Api.Dtos
 
         public List<RecipeDto>? Recipes { get; set; }
         public List<UserRecipeFavorite>? FavoriteRecipes { get; set; } = new List<UserRecipeFavorite>();
+        [Required]
+        public IList<string?> Roles { get; set; } = [];
     }
 }
