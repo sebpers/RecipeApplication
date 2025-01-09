@@ -11,6 +11,7 @@ using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +27,6 @@ builder.Services.AddCors(options =>
               .AllowCredentials();;
     });
 });
-
 
 // Add services to the container.
 
@@ -50,6 +50,38 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // Helpers
 builder.Services.AddScoped<IClaimsHelper, ClaimsHelper>();
+
+// Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // Add Bearer Token Authentication
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' followed by your token in the text box below.\nExample: Bearer abc123",
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // Add identity for user (inherited by Role class)
 builder.Services.AddIdentity<User, Role>(option =>
@@ -99,8 +131,6 @@ builder.Services.AddAuthentication(opt =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);  // Adjust expiration as needed
 }); ;
 
-
-
 // For more advanced role settings
 builder.Services.AddAuthorization(options =>
 {
@@ -119,6 +149,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 
 // Use the CORS middleware.
