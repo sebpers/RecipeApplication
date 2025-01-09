@@ -1,9 +1,7 @@
 ﻿using Api.Entities;
 using Api.Interfaces.Service;
 using Api.Requests.UserRecipeFavorite;
-using Api.Services;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers

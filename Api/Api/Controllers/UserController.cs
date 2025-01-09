@@ -1,6 +1,8 @@
-﻿using Api.Entities;
+﻿using Api.Dtos;
+using Api.Entities;
 using Api.Interfaces.Service;
-using Api.Services;
+using Api.Mapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,28 +22,23 @@ namespace Api.Controllers
             _userService = userService;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetUsersAsync()
-        //{
-        //    // get user...
-        //    User? userModel = await _userManager.a;
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            List<User?> userModels = await _userManager.Users.ToListAsync();
 
-        //    var token = Request.Cookies["authToken"];
-        //    if (token != null)
-        //    {
-        //        // Validate the token and return user information
-        //        // return user and roles from fetched user...
-        //        return Ok(new { user = userModel, roles = new[] { "admin" } }); // Remove roles?
-        //    }
+            if (userModels.Count == 0)
+            {
+                return NotFound("No users was found");
+            }
 
-        //    return Unauthorized(new { message = "Not authenticated" });
-        //}
+            return Ok(new { users = userModels });
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserAsync(string id)
         {
-            // get user...
-            User? userModel = await _userManager.FindByIdAsync(id);
+            UserWithRolesDto? userModel = await _userService.GetUserWithRolesAsync(id);
 
             var token = Request.Cookies["authToken"];
             if (token != null)
@@ -68,13 +65,13 @@ namespace Api.Controllers
                 // Validate the token and return user information
                 // return user and roles from fetched user...
 
-                // Should return a DTO - fix mapper
-                return Ok(new { user = userModel });
+                return Ok(new { user = userModel?.ToUserDto() });
             }
 
             return Unauthorized(new { message = "Not authenticated" });
         }
 
+        [Authorize(Roles = "Admin, Author")]
         [HttpPut("my/edit/description/{userId}")]
         public async Task<IActionResult> UpdateDescriptionAsync([FromBody] string description, [FromRoute] string userId)
         {
@@ -92,7 +89,7 @@ namespace Api.Controllers
                 return Unauthorized(new { message = "Not authorized" });
             }
 
-            User? user = await _userService.UpdateUserDescriptionAsync(description, userId);
+            UserDto? user = await _userService.UpdateUserDescriptionAsync(description, userId);
 
             if (user == null)
             {

@@ -3,6 +3,7 @@ using Api.Dtos.Recipe;
 using Api.Interfaces.Service;
 using Api.Jwt;
 using Api.Requests.Recipe;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,6 +45,7 @@ namespace Api.Controllers
             return Ok(recipeDto);
         }
 
+        [Authorize(Roles = "Admin, Author")]
         [Route("my-recipes/{userId}")]
         [HttpGet]
         public async Task<IActionResult> GetRecipesByUserId([FromRoute] string userId)
@@ -73,6 +75,7 @@ namespace Api.Controllers
             return Ok(RecipeListInformationDtos);
         }
 
+        [Authorize(Roles = "Admin, Author")]
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateRecipeRequest request, [FromRoute] int id)
@@ -87,6 +90,7 @@ namespace Api.Controllers
             return Ok(recipeDto);
         }
 
+        [Authorize(Roles = "Admin, Author")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRecipeRequest request)
         {
@@ -99,6 +103,7 @@ namespace Api.Controllers
             return Ok(recipeDto);
         }
 
+        [Authorize(Roles = "Admin, Author")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] int id)
