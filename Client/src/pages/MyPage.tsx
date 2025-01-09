@@ -7,6 +7,7 @@ import { getMyRecipes } from "../services/RecipeService";
 import { updateDescription } from "../services/UserService";
 import SecondaryButtonComponent from "../components/common/buttons/SecondaryButtonComponent";
 import SubmitButtonComponent from "../components/common/buttons/SubmitButtonComponent";
+import AuthorTabComponent from "../components/authors/page/AuthorTabComponent";
 
 const MyPage = () => {
   const { user } = useAuth();
@@ -14,9 +15,14 @@ const MyPage = () => {
   const [showCreateRecipeForm, setShowCreateRecipeForm] =
     useState<boolean>(false);
   const [recipes, setRecipes] = useState([]);
-  const [showDescriptionDialog, setShowDescriptionDialog] = useState<boolean>(false);
-  const [originalDescription, setOriginalDescription] = useState<string | undefined>(user?.description);
-  const [description, setDescription] = useState<string | undefined>(user?.description);
+  const [showDescriptionDialog, setShowDescriptionDialog] =
+    useState<boolean>(false);
+  const [originalDescription, setOriginalDescription] = useState<
+    string | undefined
+  >(user?.description);
+  const [description, setDescription] = useState<string | undefined>(
+    user?.description
+  );
 
   const fetchRecipes = async () => {
     if (user?.id) {
@@ -37,7 +43,7 @@ const MyPage = () => {
     button: "focus:outline-none",
     active: "text-purple-600",
     inactive: "hover:text-gray-600",
-    h1: "text-4xl text-gray-900 dark:text-white tracking-widest text-center uppercase",
+    h1: "md:text-xl text-gray-900 dark:text-white tracking-widest text-center uppercase",
   };
 
   const onAddRecipe = (): void => {
@@ -56,19 +62,19 @@ const MyPage = () => {
   const onCancelEditDescription = () => {
     setDescription(originalDescription); // Reset to original value
     setShowDescriptionDialog(false);
-  }
+  };
 
   const onSaveDescription = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const descriptionToSave = description ?? ''; // Make it certain it's defined
+    const descriptionToSave = description ?? ""; // Make it certain it's defined
 
     if (user?.id) {
       await updateDescription(descriptionToSave, user?.id);
       setShowDescriptionDialog(false);
     }
-  }
+  };
 
   return (
     <div className="container h-full shadow-xl rounded pt-10 p-5 flex flex-col">
@@ -80,35 +86,7 @@ const MyPage = () => {
         />
       </div>
 
-      <div className="mx-auto mt-5 pb-2 border-b-4 w-80 border-indigo-500">
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={() => onSetActiveTab("description")}
-            className={`${classes.button} ${
-              activeTab === "description" ? classes.active : classes.inactive
-            }`}
-          >
-            About
-          </button>
-
-          <button
-            onClick={() => setActiveTab("recipes")}
-            className={`${classes.button} ${
-              activeTab === "recipes" ? classes.active : classes.inactive
-            }`}
-          >
-            Recipes
-          </button>
-          <button
-            onClick={() => onSetActiveTab("messages")}
-            className={`${classes.button} ${
-              activeTab === "messages" ? classes.active : classes.inactive
-            }`}
-          >
-            Contact
-          </button>
-        </div>
-      </div>
+      <AuthorTabComponent setActiveTab={setActiveTab} activeTab={activeTab} />
 
       {showCreateRecipeForm && (
         <CreateRecipePage onSetActiveTab={onSetActiveTab} />
@@ -144,7 +122,7 @@ const MyPage = () => {
                     </>
                   )}
 
-                  {(!description && !showDescriptionDialog) && (
+                  {!description && !showDescriptionDialog && (
                     <>
                       <div className="flex justify-center">
                         <button
@@ -153,33 +131,38 @@ const MyPage = () => {
                             setOriginalDescription(description); // Save the current value
                             setShowDescriptionDialog(true);
                           }}
-                          className="btn-green-sm btn-green-sm:hover text-sm ml-5"
+                          className="btn-green-sm btn-green-sm:hover text-sm"
                         >
                           Add story
                         </button>
                       </div>
-                      <p>
-                        Nothing here to tell...
-                      </p>
+                      <p className="mt-3">Nothing here to tell...</p>
                     </>
                   )}
                 </div>
 
                 {showDescriptionDialog && (
-                  <form onSubmit={onSaveDescription} className="mx-auto md:w-2/4 w-full flex flex-col">
+                  <form
+                    onSubmit={onSaveDescription}
+                    className="mx-auto md:w-2/4 w-full flex flex-col"
+                  >
                     <textarea
                       placeholder="Tell vistors your story..."
                       rows={6}
                       className="w-full mx-auto p-2 bg-dark-500 border border-2"
                       value={description}
-                      onChange={(e) => {setDescription(e.target.value)}}
+                      onChange={(e) => {
+                        setDescription(e.target.value);
+                      }}
+                    />
+                    <div className="flex justify-end space-x-5 mt-3">
+                      <SecondaryButtonComponent
+                        onClickFunc={onCancelEditDescription}
                       />
-                      <div className="flex justify-end space-x-5 mt-3">
-                        <SecondaryButtonComponent onClickFunc={onCancelEditDescription} />
-                        <SubmitButtonComponent />
-                      </div>
-                  </form>)
-                }
+                      <SubmitButtonComponent />
+                    </div>
+                  </form>
+                )}
               </>
             )}
 
@@ -197,12 +180,13 @@ const MyPage = () => {
                   </button>
                 </div>
                 {
-                  <div className="flex flex-wrap justify-center items-start space-x-10">
+                  <div className="flex flex-wrap justify-center md:space-x-10">
                     {recipes?.length ? (
                       recipes?.map((r) => (
                         <Recipe
                           recipe={r}
                           key={r.id}
+                          classes={"!w-48"}
                           updateRecipeListAfterDelete={
                             updateRecipeListAfterDelete
                           }
