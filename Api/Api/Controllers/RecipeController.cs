@@ -1,9 +1,9 @@
 ﻿using Api.Dtos;
 using Api.Dtos.Recipe;
+using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Jwt;
 using Api.Requests.Recipe;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,11 +16,41 @@ namespace Api.Controllers
     {
         private readonly IRecipeService _recipeService;
         private readonly JwtHandler _jwtHandler;
+        private readonly IUserService _userService;
+        private readonly IClaimsHelper _claimsHelper;
 
-        public RecipeController(IRecipeService recipeService, JwtHandler jwtHandler)
+        public RecipeController(
+            IRecipeService recipeService,
+            JwtHandler jwtHandler,
+            IUserService userService,
+            IClaimsHelper claimsHelper
+        )
         {
             _recipeService = recipeService;
             _jwtHandler = jwtHandler;
+            _userService = userService;
+            _claimsHelper = claimsHelper;
+        }
+
+        private async Task<IActionResult> IsAuthorizedAsAdminOrAuthor()
+        {
+            var token = Request.Cookies["authToken"];
+
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new UnauthorizedAccessException("Unauthorized");
+            }
+
+            string userId = _claimsHelper.GetLoggedInUserId(token);
+
+            bool isAdminOrAuthor = await _userService.IsAdminOrAuthor(userId);
+
+            if (!isAdminOrAuthor)
+            {
+                throw new UnauthorizedAccessException("Unauthorized");
+            }
+
+            return Ok();
         }
 
         [HttpGet]
@@ -45,11 +75,25 @@ namespace Api.Controllers
             return Ok(recipeDto);
         }
 
-        [Authorize(Roles = "Admin, Author")]
         [Route("my-recipes/{userId}")]
         [HttpGet]
         public async Task<IActionResult> GetRecipesByUserId([FromRoute] string userId)
         {
+            string token = Request.Cookies["authToken"];
+            string? loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
+
+            if (loggedInUserId != userId)
+            {
+                return Unauthorized("Not authorized");
+            }
+
+            bool isAdminOrAuthor = await _userService.IsAdminOrAuthor(userId);
+
+            if (!isAdminOrAuthor)
+            {
+                return Unauthorized("Not authorized");
+            }
+
             List<RecipeDto?>? recipeDtos = await _recipeService.GetRecipesByUserId(userId);
 
             if (recipeDtos == null || recipeDtos.Count == 0)
@@ -59,7 +103,6 @@ namespace Api.Controllers
 
             return Ok(recipeDtos);
         }
-
 
         [Route("list-information")]
         [HttpGet]
@@ -75,35 +118,66 @@ namespace Api.Controllers
             return Ok(RecipeListInformationDtos);
         }
 
-        [Authorize(Roles = "Admin, Author")]
         [Route("{id}")]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateRecipeRequest request, [FromRoute] int id)
         {
-            RecipeDto? recipeDto = await _recipeService.UpdateAsync(request, id);
-
-            if (recipeDto == null)
+            try
             {
-                return NotFound();
-            }
+                var authResult = await IsAuthorizedAsAdminOrAuthor();
 
-            return Ok(recipeDto);
+                if (authResult is UnauthorizedResult || authResult is BadRequestObjectResult)
+                {
+                    return authResult;
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                RecipeDto? recipeDto = await _recipeService.UpdateAsync(request, id);
+
+                if (recipeDto == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(recipeDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
-        [Authorize(Roles = "Admin, Author")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRecipeRequest request)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
-            RecipeDto recipeDto = await _recipeService.CreateAsync(request);
+                var authResult = await IsAuthorizedAsAdminOrAuthor();
 
-            return Ok(recipeDto);
+                if (authResult is UnauthorizedResult || authResult is BadRequestObjectResult)
+                {
+                    return authResult;
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                RecipeDto recipeDto = await _recipeService.CreateAsync(request);
+
+                return Ok(recipeDto);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
-        [Authorize(Roles = "Admin, Author")]
         [Route("{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] int id)
@@ -114,7 +188,14 @@ namespace Api.Controllers
 
                 if (string.IsNullOrEmpty(token))
                 {
-                    return Unauthorized(new { message = "Token is missing" });
+                    return Unauthorized(new { message = "Unauhorized" });
+                }
+
+                var authResult = await IsAuthorizedAsAdminOrAuthor();
+
+                if (authResult is UnauthorizedResult || authResult is BadRequestObjectResult)
+                {
+                    return authResult;
                 }
 
                 var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
@@ -131,7 +212,6 @@ namespace Api.Controllers
                 }
 
                 return Ok(new { deleted = true, message = "Item deleted successfully" });
-
             }
             catch (Exception e)
             {

@@ -23,7 +23,7 @@ const ProtectedRoute = ({ isAuthenticated }: ProtectedRouteProps) => {
   }, [isAuthenticated]);
 
   if (authStatus === null) {
-    return <LoadingComponent />
+    return <LoadingComponent />;
   }
 
   if (!authStatus) {

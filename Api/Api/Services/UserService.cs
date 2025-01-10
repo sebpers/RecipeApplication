@@ -4,6 +4,7 @@ using Api.Interfaces.Helpers;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Mapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Api.Services
 {
@@ -11,11 +12,13 @@ namespace Api.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IClaimsHelper _claimsHelper;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(IUserRepository userRepository, IClaimsHelper claimsHelper)
+        public UserService(IUserRepository userRepository, IClaimsHelper claimsHelper, UserManager<User> userManager)
         {
             _userRepository = userRepository;
             _claimsHelper = claimsHelper;
+            _userManager = userManager;
         }
 
         public async Task<UserDto?> UpdateUserDescriptionAsync(string description, string id)
@@ -76,6 +79,25 @@ namespace Api.Services
             bool isAdmin = _claimsHelper.IsLoggedInUserAdmin(token);
 
             return isAdmin;
+        }
+
+        public async Task<bool> IsAdminOrAuthor(string userId)
+        {
+            User? userModel = await _userManager.FindByIdAsync(userId);
+
+            if (userModel == null)
+            {
+                return false;
+            }
+
+            var roles = await _userManager.GetRolesAsync(userModel);
+
+            if (roles.Contains("Admin") || roles.Contains("Author"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

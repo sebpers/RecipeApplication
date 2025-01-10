@@ -1,7 +1,6 @@
 ﻿using Api.Data;
 using Api.Entities;
 using Api.Interfaces.Repository;
-using Api.Mapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,14 +26,12 @@ namespace Api.Repository
         public async Task<User?> GetByIdAsync(string id)
         {
             User? userModel = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-
             return userModel;
         }
 
         public async Task<IList<string>?> GetRolesByUserAsync(User userModel)
         {
             IList<string?> roles = await _userManager.GetRolesAsync(userModel);
-
             return roles;
         }
     }

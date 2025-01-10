@@ -3,7 +3,6 @@ import AuthCardComponent from "../components/AuthCardComponent";
 import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { register } from "../services/AuthService";
-import useRole from "../hooks/useRole";
 import Register from "../types/Register";
 import RadioButtons from "../components/common/RadioButtonsComponent";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -28,8 +27,6 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<string>(""); // Temporary, just to make it easier with roles
-
-  const { provideRole } = useRole();
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -68,9 +65,8 @@ const RegisterPage = () => {
       const response = await register(account);
 
       if (response.isAuthSuccessful) {
-        provideRole(response?.roles);
         navigate("/");
-        toast.success("Successfully registered.")
+        toast.success("Successfully registered.");
       }
     } catch (err) {
       setErrors(err);

@@ -34,8 +34,6 @@ namespace Api.Controllers
             _context = context;
         }
 
-
-
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationRequest userForRegistration)
         {
@@ -43,8 +41,6 @@ namespace Api.Controllers
             {
                 return BadRequest();
             }
-
-
 
             User userModel = _mapper.Map<User>(userForRegistration);
             var result = await _userManager.CreateAsync(userModel, userForRegistration.Password);
@@ -121,16 +117,10 @@ namespace Api.Controllers
             return Ok(new { Message = "Logged out successfully" });
         }
 
-
         [HttpGet("me")]
         public IActionResult GetLoggedInUser()
         {
             var token = Request.Cookies["authToken"];
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { message = "Token is missing" });
-            }
 
             var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
 
@@ -168,11 +158,6 @@ namespace Api.Controllers
         public IActionResult ValidateToken()
         {
             var token = Request.Cookies["authToken"];
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized(new { message = "Token is missing" });
-            }
 
             var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
             if (claimsPrincipal == null)

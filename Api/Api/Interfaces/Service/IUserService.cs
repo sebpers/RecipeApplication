@@ -10,5 +10,6 @@ namespace Api.Interfaces.Service
         Task<UserWithRolesDto> GetUserWithRolesAsync(string id);
         Task<bool> IsSameUser(string userId, string token);
         bool IsLoggedInUserAdmin(string token);
+        Task<bool> IsAdminOrAuthor(string userId);
     }
 }

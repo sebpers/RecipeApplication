@@ -44,7 +44,6 @@ namespace Api.Repository
 
             Recipe? updatedRecipe = await _context.Recipes
                 .FirstOrDefaultAsync(r => r.Id == recipeModel.Id);
-                
 
             return updatedRecipe;
         }
@@ -56,12 +55,11 @@ namespace Api.Repository
             await _context.SaveChangesAsync();
 
             var createdRecipe = await _context.Recipes
-                                      .Include(r => r.User)  // Include the User related to this recipe
-                                      .FirstOrDefaultAsync(r => r.Id == recipe.Id); // Get the just created recipe by its ID
+                .Include(r => r.User)  // Include the User related to this recipe
+                .FirstOrDefaultAsync(r => r.Id == recipe.Id); // Get the just created recipe by its ID
 
             return createdRecipe;
         }
-
 
         public async Task<Recipe> DeleteAsync(Recipe recipeModel)
         {

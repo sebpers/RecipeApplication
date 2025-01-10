@@ -78,12 +78,16 @@ const MyPage = () => {
 
   return (
     <div className="container h-full shadow-xl rounded pt-10 p-5 flex flex-col">
-      <div className="flex justify-center">
+      <div className="flex flex-col mx-auto">
         <img
           className="border border-3 shadow-lg object-contain h-48 w-48 rounded-full"
           src={profile1}
           alt="Profile picture"
         />
+
+        <p className="text-center mt-4 italic">
+          {user?.firstName} {user?.lastName} - {user?.roles}
+        </p>
       </div>
 
       <AuthorTabComponent setActiveTab={setActiveTab} activeTab={activeTab} />

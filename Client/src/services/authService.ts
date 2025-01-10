@@ -63,6 +63,7 @@ export const validateUserToken = async () => {
     const response = await axios.get(`${API_PREFIX}/validate`, {
       withCredentials: true,
     });
+
     return response;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

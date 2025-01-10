@@ -5,7 +5,6 @@ import HomePage from "./pages/HomePage";
 import RecipeView from "./components/recipes/RecipeView";
 import AuthPage from "./pages/AuthPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import RoleProvider from "./context/role/RoleProvider";
 import AccountPage from "./pages/AccountPage";
 import MyPage from "./pages/MyPage";
 import AuthProvider from "./context/auth/AuthProvider";
@@ -15,41 +14,39 @@ import { validateUserToken } from "./services/AuthService";
 import ProtectedRoute from "./helpers/protection/ProtectedRoute";
 
 function App() {
-const isAuthenticated = async (): Promise<boolean> => {
-  const response = await validateUserToken();
+  const isAuthenticated = async (): Promise<boolean> => {
+    const response = await validateUserToken();
 
-  return response.status === 200;
-}
+    return response.status === 200;
+  };
 
   return (
-    <AuthProvider>
-      <RoleProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LayoutPage />}>
-              <Route index element={<HomePage />} />
-              <Route path="recipes" element={<RecipesList />} />
-              <Route path="recipes/recipe/:id" element={<RecipeView />} />
-              <Route path="login" element={<AuthPage />} />
-              <Route path="register" element={<AuthPage />} />
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LayoutPage />}>
+            <Route index element={<HomePage />} />
+            <Route path="recipes" element={<RecipesList />} />
+            <Route path="recipes/recipe/:id" element={<RecipeView />} />
+            <Route path="login" element={<AuthPage />} />
+            <Route path="register" element={<AuthPage />} />
 
-              { /* Protected routes */}
-              <Route
-                path="my"
-                element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
-              >
-                <Route index element={<MyPage />} />
-                <Route path="create-recipe" element={<CreateRecipePage />} />
-              </Route>
-
-              <Route path="author/:id" element={<AccountPage />} />
-              <Route path="authors" element={<AuthorListPage />} />
-              <Route path="*" element={<NotFoundPage />} />
+            {/* Protected routes */}
+            <Route
+              path="my"
+              element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+            >
+              <Route index element={<MyPage />} />
+              <Route path="create-recipe" element={<CreateRecipePage />} />
             </Route>
-          </Routes>
-        </BrowserRouter>
-      </RoleProvider>
-    </AuthProvider>
+
+            <Route path="author/:id" element={<AccountPage />} />
+            <Route path="authors" element={<AuthorListPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

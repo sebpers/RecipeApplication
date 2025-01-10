@@ -1,7 +1,5 @@
 ﻿using Api.Interfaces.Helpers;
 using Api.Jwt;
-using Azure.Core;
-using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 
 namespace Api.Helpers
@@ -16,27 +14,26 @@ namespace Api.Helpers
         }
 
         // Check if the user has an "Admin" role
-        public bool IsAdmin(ClaimsPrincipal user)
-        {
-            return user.IsInRole("Admin");
-        }
+        //public bool IsAdmin(ClaimsPrincipal user)
+        //{
+        //    return user.IsInRole("Admin");
+        //}
 
         // Check if the user is the author (based on the userId)
-        public bool IsAuthor(ClaimsPrincipal user, string authorId)
-        {
-            var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            return userIdClaim == authorId;
-        }
+        //public bool IsAuthor(ClaimsPrincipal user, string authorId)
+        //{
+        //    var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    return userIdClaim == authorId;
+        //}
 
         // Check if the user has a specific role
-        public bool HasRole(ClaimsPrincipal user, string role)
-        {
-            return user.IsInRole(role);
-        }
+        //public bool HasRole(ClaimsPrincipal user, string role)
+        //{
+        //    return user.IsInRole(role);
+        //}
 
         public string? GetLoggedInUserId(string token)
         {
-
             if (string.IsNullOrEmpty(token))
             {
                 throw new UnauthorizedAccessException("Token is missing");
@@ -54,7 +51,6 @@ namespace Api.Helpers
 
         public bool IsLoggedInUserAdmin(string token)
         {
-
             if (string.IsNullOrEmpty(token))
             {
                 throw new UnauthorizedAccessException("Token is missing");

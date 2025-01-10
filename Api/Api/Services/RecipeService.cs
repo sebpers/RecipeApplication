@@ -112,7 +112,7 @@ namespace Api.Services
 
             Recipe recipeModel = request.ToRecipeFromCreateRequest();
 
-            recipeModel.Author = user.FirstName + " " + user.LastName;
+            recipeModel.Author = $"{user.FirstName} {user.LastName}";
 
             Recipe recipe = await _recipeRepo.CreateAsync(recipeModel);
 
@@ -131,7 +131,7 @@ namespace Api.Services
             var userId = currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRoles = currentUser.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
-            // Authorization logic: check if user is admin or the author of the recipe
+            // Authorization logic - check if user is admin or the author of the recipe
             if (!userRoles.Contains("Admin") && recipeToDelete.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You do not have permission to delete this recipe.");
