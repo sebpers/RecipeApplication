@@ -68,23 +68,23 @@ export const validateUserToken = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.statusText || "An error occurred";
-
-      // Check if the message has already been shown
-      if (!displayedMessages.has(message)) {
-        toast.error(message);
-        displayedMessages.add(message);
-
-        if (message === "Invalid or expired token") {
-          logoutUser();
+      if (window.location.pathname !== "/") {
+        // Check if the message has already been shown
+        if (!displayedMessages.has(message)) {
           toast.error(message);
-          displayedMessages.add("Time expired, login again to continue");
+          displayedMessages.add(message);
+
+          if (message === "Invalid or expired token") {
+            logoutUser();
+            toast.error(message);
+            displayedMessages.add("Time expired, login again to continue");
+          }
+
+          setTimeout(() => {
+            displayedMessages.clear(); // Clears the set messages
+          }, 3000);
         }
-
-        setTimeout(() => {
-          displayedMessages.clear(); // Clears the set messages
-        }, 3000);
       }
-
       throw (
         error.response?.data?.errors || error.response?.data || error.message
       );

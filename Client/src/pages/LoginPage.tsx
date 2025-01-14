@@ -29,7 +29,7 @@ const LoginPage = () => {
       if (response.isAuthSuccessful) {
         setIsAuthenticated(true);
         navigate("/");
-        toast.success("Welcome")
+        toast.success("Welcome");
       }
     } catch (err) {
       setError(err.response?.data?.errorMessage || "Something went wrong!");
