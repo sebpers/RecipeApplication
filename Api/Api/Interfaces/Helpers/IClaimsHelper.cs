@@ -9,5 +9,6 @@ namespace Api.Interfaces.Helpers
         //bool HasRole(ClaimsPrincipal user, string role);
         string? GetLoggedInUserId(string token);
         bool IsLoggedInUserAdmin(string token);
+        bool IsAdminOrAuthor(string token);
     }
 }

@@ -1,11 +1,14 @@
 ﻿using Api.Dtos;
 using Api.Entities;
+using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Mapper;
+using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace Api.Controllers
 {
@@ -15,11 +18,13 @@ namespace Api.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserService _userService;
+        private readonly IClaimsHelper _claimsHelper;
 
-        public UserController(UserManager<User> userManager, IUserService userService)
+        public UserController(UserManager<User> userManager, IUserService userService, IClaimsHelper claimsHelper)
         {
             _userManager = userManager;
             _userService = userService;
+            _claimsHelper = claimsHelper;
         }
 
         [HttpGet]
@@ -59,44 +64,48 @@ namespace Api.Controllers
                     .Include(u => u.Recipes)
                     .FirstOrDefaultAsync(u => u.Id == id);
 
-            var token = Request.Cookies["authToken"];
-            if (token != null)
-            {
-                // Validate the token and return user information
-                // return user and roles from fetched user...
-
                 return Ok(new { user = userModel?.ToUserDto() });
-            }
-
-            return Unauthorized(new { message = "Not authenticated" });
         }
 
-        [Authorize(Roles = "Admin, Author")]
         [HttpPut("my/edit/description/{userId}")]
         public async Task<IActionResult> UpdateDescriptionAsync([FromBody] string description, [FromRoute] string userId)
         {
-            var token = Request.Cookies["authToken"];
-
-            if (token == null)
+            try
             {
-                return Unauthorized(new { message = "Not authenticated" });
+                var token = Request.Cookies["authToken"];
+
+                if (token == null)
+                {
+                    return Unauthorized(new { message = "Not authenticated" });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                bool isSameUser = await _userService.IsSameUser(userId, token);
+
+                if ((isSameUser && _claimsHelper.IsAdminOrAuthor(token)) || _userService.IsLoggedInUserAdmin(token))
+                {
+                    UserDto? user = await _userService.UpdateUserDescriptionAsync(description, userId);
+
+                    if (user == null)
+                    {
+                        return NotFound("No user was found");
+                    }
+
+                    return Ok(new { user });
+                }
+                else
+                {
+                    return Unauthorized(new { message = "Not authorized" });
+                }
             }
-
-            bool isSameUser = await _userService.IsSameUser(userId, token);
-
-            if (!isSameUser && !_userService.IsLoggedInUserAdmin(token))
+            catch (Exception e)
             {
-                return Unauthorized(new { message = "Not authorized" });
+                throw new Exception("Error: " + e.Message);
             }
-
-            UserDto? user = await _userService.UpdateUserDescriptionAsync(description, userId);
-
-            if (user == null)
-            {
-                return NotFound("No user was found");
-            }
-
-            return Ok(new { user });
         }
     }
 }

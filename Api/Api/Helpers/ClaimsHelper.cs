@@ -67,5 +67,24 @@ namespace Api.Helpers
 
             return roles.Contains("Admin");
         }
+
+        public bool IsAdminOrAuthor(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new UnauthorizedAccessException("Token is missing");
+            }
+
+            var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
+
+            if (claimsPrincipal == null)
+            {
+                throw new UnauthorizedAccessException("Invalid or expired token");
+            }
+
+            var roles = claimsPrincipal.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            return roles.Contains("Admin") || roles.Contains("Author");
+        }
     }
 }
