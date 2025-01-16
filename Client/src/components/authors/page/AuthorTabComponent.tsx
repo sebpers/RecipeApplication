@@ -1,4 +1,5 @@
 import { FaHeart } from "react-icons/fa";
+import useAuth from "../../../hooks/auth/useAuth";
 
 type AuthorTabComponent = {
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
@@ -7,6 +8,7 @@ type AuthorTabComponent = {
 
 const AuthorTabComponent = (props: AuthorTabComponent) => {
   const { setActiveTab, activeTab } = props;
+  const { isAuthenticated } = useAuth();
 
   const classes = {
     button: "focus:outline-none",
@@ -34,23 +36,28 @@ const AuthorTabComponent = (props: AuthorTabComponent) => {
         >
           Recipes
         </button>
-        <button
-          onClick={() => setActiveTab("messages")}
-          className={`${classes.button} ${
-            activeTab === "message" ? classes.active : classes.inactive
-          }`}
-        >
-          Contact
-        </button>
 
-        <button
-          onClick={() => setActiveTab("follow")}
-          className={`${classes.button} ${
-            activeTab === "follow" ? classes.active : classes.inactive
-          }`}
-        >
-          <FaHeart size="20" title="Follow" />
-        </button>
+        {isAuthenticated && (
+          <>
+            <button
+              onClick={() => setActiveTab("messages")}
+              className={`${classes.button} ${
+                activeTab === "message" ? classes.active : classes.inactive
+              }`}
+            >
+              Contact
+            </button>
+
+            <button
+              onClick={() => setActiveTab("follow")}
+              className={`${classes.button} ${
+                activeTab === "follow" ? classes.active : classes.inactive
+              }`}
+            >
+              <FaHeart size="20" title="Follow" />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
