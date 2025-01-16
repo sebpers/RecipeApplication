@@ -5,28 +5,25 @@ import CardTitleComponent from "../common/card/CardTitleComponent";
 import RecipeListInformation from "../../types/RecipeListInformation";
 
 interface RecipeProps {
-  updateRecipeListAfterDelete(): void;
+  updateList?: () => void;
   recipe: RecipeListInformation;
   classes?: string;
 }
 
-const Recipe = ({
-  recipe,
-  updateRecipeListAfterDelete,
-  classes,
-}: RecipeProps) => {
-  const { id, title, author, userId } = recipe;
+const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
+  const { id, title, author, userId, favoritedBy } = recipe;
 
   return (
     <RecipeCardComponent recipeId={id} classes={classes}>
-      <RecipeImageComponent
-        recipeId={id}
-        updateRecipeListAfterDelete={updateRecipeListAfterDelete}
+      <RecipeImageComponent recipeId={id} updateList={updateList} />
+      <CardTitleComponent
+        title={title}
+        favoritedBy={favoritedBy}
+        recipeId={recipe.id}
+        updateList={updateList}
       />
-      <CardTitleComponent title={title} />
       <RecipeCardAuthorBadgeComponent userId={userId} author={author} />
     </RecipeCardComponent>
   );
 };
-
 export default Recipe;

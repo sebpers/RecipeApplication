@@ -106,7 +106,12 @@ const NavbarComponent = () => {
                     </Link>
                   )}
 
-                  <Link to="/favorites">
+                  <Link
+                    to={{
+                      pathname: "my/favorite-recipes",
+                    }}
+                    state={{ userId: user?.id }}
+                  >
                     <li className="px-4 py-2 hover:bg-gray-100">Favorites</li>
                   </Link>
 

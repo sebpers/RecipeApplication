@@ -1,4 +1,6 @@
-﻿namespace Api.Entities
+﻿using Api.Dtos.Recipe;
+
+namespace Api.Entities
 {
     public class UserRecipeFavorite
     {

@@ -15,6 +15,7 @@ const RecipesList = () => {
   const fetchRecipeListInformation = async () => {
     setIsLoading(true);
     const result: RecipeListInformation[] = await getRecipesListInformation();
+    console.log("result: ", result);
     setIsLoading(false);
     setRecipes(result);
     setFilteredRecipes(result);
@@ -39,14 +40,15 @@ const RecipesList = () => {
             />
           </div>
 
-          {/*!! Implement pagination */}
-          <div className="flex flex-wrap justify-center items-start space-x-10 min-w-full   max-w-screen-md min-w-80">
+          {/*! TODO Implement pagination */}
+          <div className="flex flex-wrap justify-center items-start min-w-full max-w-screen-md min-w-80">
             {filteredRecipes?.length ? (
               filteredRecipes.map((r: RecipeListInformation) => (
                 <Recipe
+                  classes="md:ml-5 md:mr-5"
                   recipe={r}
                   key={r.id}
-                  updateRecipeListAfterDelete={updateRecipeListAfterDelete}
+                  updateList={updateRecipeListAfterDelete}
                 />
               ))
             ) : (

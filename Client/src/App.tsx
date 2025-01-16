@@ -12,6 +12,7 @@ import CreateRecipePage from "./pages/CreateRecipePage";
 import AuthorListPage from "./pages/AuthorListPage";
 import { validateUserToken } from "./services/AuthService";
 import ProtectedRoute from "./helpers/protection/ProtectedRoute";
+import FavoriteRecipesPage from "./pages/FavoriteRecipesPage";
 
 function App() {
   const isAuthenticated = async (): Promise<boolean> => {
@@ -38,6 +39,10 @@ function App() {
             >
               <Route index element={<MyPage />} />
               <Route path="create-recipe" element={<CreateRecipePage />} />
+              <Route
+                path="favorite-recipes"
+                element={<FavoriteRecipesPage />}
+              />
             </Route>
 
             <Route path="author/:id" element={<AccountPage />} />

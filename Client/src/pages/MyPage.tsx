@@ -191,9 +191,7 @@ const MyPage = () => {
                           recipe={r}
                           key={r.id}
                           classes={"!w-48"}
-                          updateRecipeListAfterDelete={
-                            updateRecipeListAfterDelete
-                          }
+                          updateList={updateRecipeListAfterDelete}
                         />
                       ))
                     ) : (

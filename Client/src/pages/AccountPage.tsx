@@ -73,10 +73,14 @@ const AccountPage = () => {
               <>
                 <h1 className={classes.h1}>Recipes</h1>
                 {
-                  <div className="flex flex-wrap justify-center md:space-x-10">
+                  <div className="flex flex-wrap justify-center">
                     {user?.recipes.length ? (
                       user?.recipes.map((r) => (
-                        <Recipe recipe={r} key={r.id} classes={"!w-48"} />
+                        <Recipe
+                          recipe={r}
+                          key={r.id}
+                          classes={"!w-48 md:ml-5 md:mr-5"}
+                        />
                       ))
                     ) : (
                       <i className="mt-5">No recipes created yet...</i>

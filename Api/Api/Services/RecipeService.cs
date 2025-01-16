@@ -30,15 +30,28 @@ namespace Api.Services
             return recipeDtos;
         }
 
-        public async Task<List<RecipeListInformationDto>> GetRecipeListInformation()
+        public async Task<List<RecipeListInformationDto?>> GetRecipeListInformation(string loggedInUserId)
         {
             List<Recipe> recipes = await _recipeRepo.GetAllAsync();
-            List<RecipeListInformationDto> recipeListInformationDtos = recipes.Select(r => r.ToRecipeListInformationDto()).ToList();
+            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
+                .Select(r => r.ToRecipeListInformationDto(loggedInUserId))
+                .ToList();
 
             return recipeListInformationDtos;
         }
 
-        public async Task<RecipeDto?> GetByIdAsync(int id)
+        // For people who are not logged in
+        public async Task<List<RecipeListInformationDto?>> GetRecipeListInformation()
+        {
+            List<Recipe> recipes = await _recipeRepo.GetAllAsync();
+            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
+                .Select(r => r.ToRecipeListInformationDto())
+                .ToList();
+
+            return recipeListInformationDtos;
+        }
+
+        public async Task<RecipeDto?> GetByIdAsync(int id, string userId)
         {
             Recipe recipeModel = await _recipeRepo.GetByIdAsync(id);
 
@@ -46,8 +59,8 @@ namespace Api.Services
             {
                 return null;
             }
-
-            return recipeModel.ToRecipeDto();
+            // Pass in userId to get favorite recipe if logged in
+            return recipeModel.ToRecipeDto(userId);
         }
 
         public async Task<List<RecipeDto?>?> GetRecipesByUserId(string userId)
@@ -73,7 +86,7 @@ namespace Api.Services
                 return null;
             }
 
-            List<RecipeDto?>? recipeDtos = recipeModel.Select(r => r.ToRecipeDto()).ToList();
+            List<RecipeDto?>? recipeDtos = recipeModel.Select(r => r.ToRecipeDto(userId)).ToList();
 
             return recipeDtos;
         }

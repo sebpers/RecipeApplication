@@ -1,13 +1,13 @@
-﻿using Api.Entities;
+﻿using Api.Dtos;
+using Api.Entities;
 using Api.Interfaces.Service;
-using Api.Requests.UserRecipeFavorite;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     [EnableCors("AllowSpecificOrigin")]
-    [Route("api/favorites")]
+    [Route("api/favorite-recipes")]
     [ApiController]
     public class UserRecipeFavoriteController : ControllerBase
     {
@@ -18,12 +18,19 @@ namespace Api.Controllers
             _userRecipeFavoriteService = userRecipeFavoriteService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync(string userId)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetAllUserFavoritesAsync([FromRoute] string userId)
         {
-            List<UserRecipeFavorite>? recipeFavoriteDtos = await _userRecipeFavoriteService.GetAllAsync(userId);
+            var token = Request.Cookies["authToken"];
 
-            return Ok(recipeFavoriteDtos);
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new UnauthorizedAccessException("Unauthorized");
+            }
+
+            List<RecipeListInformationDto?> recipeFavorites = await _userRecipeFavoriteService.GetAllUserFavoritesAsync(userId);
+
+            return Ok(recipeFavorites);
         }
 
         [HttpGet]
@@ -35,10 +42,10 @@ namespace Api.Controllers
             return Ok(recipeFavoriteDto);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddAsync(UserRecipeFavoriteRequest UserRecipeFavoriteRequest)
+        [HttpPost("{recipeId}")]
+        public async Task<IActionResult> AddAsync([FromRoute] int recipeId, [FromBody] string userId)
         {
-            bool success = await _userRecipeFavoriteService.AddAsync(UserRecipeFavoriteRequest);
+            bool success = await _userRecipeFavoriteService.AddAsync(userId, recipeId);
 
             return Ok(success);
         }

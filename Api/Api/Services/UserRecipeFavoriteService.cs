@@ -1,36 +1,41 @@
-﻿using Api.Entities;
+﻿using Api.Dtos;
+using Api.Dtos.Recipe;
+using Api.Entities;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Mapper;
 using Api.Repository;
-using Api.Requests.UserRecipeFavorite;
 
 namespace Api.Services
 {
     public class UserRecipeFavoriteService : IUserRecipeFavoriteService
     {
         private readonly IUserRecipeFavoriteRepository _userRecipeFavoriteRepository;
+        private readonly IRecipeService _recipeService;
 
-        public UserRecipeFavoriteService(IUserRecipeFavoriteRepository userRecipeFavoriteRepository)
+        public UserRecipeFavoriteService(IUserRecipeFavoriteRepository userRecipeFavoriteRepository, IRecipeService recipeService)
         {
             _userRecipeFavoriteRepository = userRecipeFavoriteRepository;
+            _recipeService = recipeService;
         }
 
-        public async Task<bool> AddAsync(UserRecipeFavoriteRequest userRecipeFavoriteRequest)
+        public async Task<List<RecipeListInformationDto?>> GetAllUserFavoritesAsync(string userId)
         {
-            if (await ExistsAsync(userRecipeFavoriteRequest.UserId, userRecipeFavoriteRequest.RecipeId))
+            List<UserRecipeFavorite?> favoriteRecipesList = await _userRecipeFavoriteRepository.GetAllAsync(userId);
+
+            if (favoriteRecipesList == null)
             {
-                return false;
+                return null;
             }
 
-            UserRecipeFavorite favoriteRecipeModel = userRecipeFavoriteRequest.ToUserRecipeFavoriteFromAddRequest();
+            List<RecipeListInformationDto> recipeListInformationDto = favoriteRecipesList
+                .Select(fr => fr.ToRecipeListInformationDtoFromUserRecipeFavorite())
+                .ToList();
 
-            _userRecipeFavoriteRepository.AddAsync(favoriteRecipeModel);
-
-            return true;
+            return recipeListInformationDto;
         }
 
-        public async Task<List<UserRecipeFavorite>?> GetAllAsync(string userId)
+        public async Task<List<UserRecipeFavorite>?> GetAllUsersFavoriteAsync(string userId)
         {
             // TODO -  Map to DTOS
             List<UserRecipeFavorite>? favoriteRecipeDtos = await _userRecipeFavoriteRepository.GetAllAsync(userId);
@@ -49,6 +54,43 @@ namespace Api.Services
             }
 
             return favoriteRecipe;
+        }
+
+        public async Task<bool> AddAsync(string userId, int recipeId)
+        {
+            if (await ExistsAsync(userId, recipeId))
+            {
+                if(await RemoveAsync(userId, recipeId))
+                {
+                    return false;
+                };
+            }
+
+            var favoriteRecipe = new UserRecipeFavorite
+            {
+                UserId = userId,
+                RecipeId = recipeId
+            };
+
+            await _userRecipeFavoriteRepository.AddAsync(favoriteRecipe);
+
+            return true;
+        }
+
+        public async Task<bool> RemoveAsync(string userId, int recipeId)
+        {
+            try
+            {
+                var existingFavoredRecipe = await GetByIdsAsync(userId, recipeId);
+
+                await _userRecipeFavoriteRepository.RemoveFavoredRecipe(existingFavoredRecipe);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("ERROR: " + e.Message);
+            }
         }
 
         private async Task<bool> ExistsAsync(string userId, int recipeId)

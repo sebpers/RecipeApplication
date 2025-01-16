@@ -19,6 +19,7 @@ namespace Api.Repository
             return await _context.Recipes
                 .Include(recipe => recipe.Comments)
                 .Include(recipe => recipe.User)
+                .Include(recipe => recipe.FavoritedBy)
                 .ToListAsync();
         }
 
@@ -26,6 +27,7 @@ namespace Api.Repository
         {
             return await _context.Recipes
                 .Include(r => r.User)
+                .Include(r => r.FavoritedBy)
                 .FirstAsync(recipe => recipe.Id == id);
         }
 
@@ -34,6 +36,7 @@ namespace Api.Repository
             return await _context.Recipes
                 .Include(recipe => recipe.Comments)
                 .Include(recipe => recipe.User)
+                .Include(recipe => recipe.FavoritedBy)
                 .Where(recipe => recipe.UserId == userId)
                 .ToListAsync();
         }

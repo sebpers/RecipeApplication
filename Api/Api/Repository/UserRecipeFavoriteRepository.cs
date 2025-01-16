@@ -15,7 +15,7 @@ namespace Api.Repository
             _context = context;
         }
 
-        public async void AddAsync(UserRecipeFavorite UserRecipeFavoriteModel)
+        public async Task AddAsync(UserRecipeFavorite UserRecipeFavoriteModel)
         {
             await _context.UserRecipeFavorites.AddAsync(UserRecipeFavoriteModel);
             await _context.SaveChangesAsync();
@@ -30,9 +30,18 @@ namespace Api.Repository
 
         public async Task<List<UserRecipeFavorite>?> GetAllAsync(string userId)
         {
-            List<UserRecipeFavorite>? favoriteRecipeDtos = await _context.UserRecipeFavorites.Where(usr => usr.UserId == userId).ToListAsync();
+            List<UserRecipeFavorite>? favoriteRecipeDtos = await _context.UserRecipeFavorites
+                .Include(usr => usr.Recipe)
+                .Where(usr => usr.UserId == userId)
+                .Where(usr => usr.Recipe != null)
+                .ToListAsync();
 
             return favoriteRecipeDtos;
+        }
+        public async Task RemoveFavoredRecipe(UserRecipeFavorite UserRecipeFavoriteModel)
+        {
+            _context.UserRecipeFavorites.Remove(UserRecipeFavoriteModel);
+            await _context.SaveChangesAsync();
         }
     }
 }

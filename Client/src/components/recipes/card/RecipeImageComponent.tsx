@@ -8,7 +8,7 @@ import ConfirmDeleteModalComponent from "../../common/modal/ConfirmDeleteModalCo
 interface RecipeImageComponentProps {
   authorId?: string;
   recipeId: number | undefined;
-  updateRecipeListAfterDelete(): void;
+  updateList: () => void;
 }
 
 const RecipeImageComponent = (props: RecipeImageComponentProps) => {
@@ -55,7 +55,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
       const res = await deleteRecipe(props.recipeId);
 
       if (res?.deleted) {
-        props.updateRecipeListAfterDelete();
+        props.updateList();
       }
     } else {
       throw "Recipe id not found";

@@ -5,15 +5,6 @@ import Recipe from "../types/Recipe";
 
 const API_PREFIX = "http://localhost:5098/api/recipes";
 
-//! For later use
-// export const getRecipes = async () => {
-//   const recipeList = await axios.get(API_PREFIX)
-//     .then(response => {console.log(response.data)})
-//     .catch(error => {console.log(error)})
-
-//   return recipeList;
-// };
-
 export const getMyRecipes = async (userId: string) => {
   try {
     const res = await axios.get(`${API_PREFIX}/my-recipes/${userId}`, {
@@ -29,7 +20,7 @@ export const getMyRecipes = async (userId: string) => {
 
 export const getRecipesListInformation = async () => {
   const recipeList = await axios
-    .get(`${API_PREFIX}/list-information`)
+    .get(`${API_PREFIX}/list-information`, { withCredentials: true })
     .then((response) => {
       return response.data;
     })
@@ -42,7 +33,7 @@ export const getRecipesListInformation = async () => {
 
 export const getById = async (id: string): Promise<Recipe> => {
   const recipe = await axios
-    .get(`${API_PREFIX}/${id}`)
+    .get(`${API_PREFIX}/${id}`, { withCredentials: true })
     .then((response) => {
       return response.data;
     })

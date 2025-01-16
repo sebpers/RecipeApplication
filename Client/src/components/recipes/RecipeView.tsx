@@ -18,6 +18,7 @@ const RecipeView = () => {
     try {
       if (id) {
         const result: Recipe = await getById(id.toString());
+        console.log("result: ", result);
         setRecipe(result);
       }
     } catch (error) {
@@ -38,11 +39,15 @@ const RecipeView = () => {
       <RecipeImageComponent
         recipeId={recipe?.id}
         authorId={recipe?.userId}
-        updateRecipeListAfterDelete={navigateAway}
+        updateList={navigateAway}
       />
 
       <div className="p-3">
-        <CardTitleComponent title={recipe?.title} />
+        <CardTitleComponent
+          title={recipe?.title}
+          recipeId={recipe?.id}
+          favoritedBy={recipe?.favoritedBy}
+        />
 
         <RecipeCardDescription description={recipe?.description} />
 

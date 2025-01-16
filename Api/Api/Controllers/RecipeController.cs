@@ -1,5 +1,6 @@
 ﻿using Api.Dtos;
 using Api.Dtos.Recipe;
+using Api.Entities;
 using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Jwt;
@@ -65,7 +66,20 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            RecipeDto? recipeDto = await _recipeService.GetByIdAsync(id);
+            string? loggedInUserId = null;
+            var token = Request.Cookies["authToken"];
+
+                if (token != null)
+            {
+                var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
+
+                loggedInUserId = claimsPrincipal.FindFirst("id")?.Value;
+            }
+
+            // Favorite recipes are only working for logged in users, show if logged in (recipeDto)
+            string? userId = loggedInUserId ?? null;
+
+            RecipeDto? recipeDto = await _recipeService.GetByIdAsync(id, userId);
 
             if (recipeDto == null)
             {
@@ -108,14 +122,34 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRecipeListInformation()
         {
-            List<RecipeListInformationDto> RecipeListInformationDtos = await _recipeService.GetRecipeListInformation();
-
-            if (RecipeListInformationDtos == null)
+            try
             {
-                return NotFound();
-            }
+                string token = Request.Cookies["authToken"];
+                string? loggedInUserId = null;
 
-            return Ok(RecipeListInformationDtos);
+                if (token != null)
+                {
+                    loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
+                }
+                
+                List<RecipeListInformationDto?> RecipeListInformationDtos = loggedInUserId != null ?
+                    await _recipeService.GetRecipeListInformation(loggedInUserId) // logged in users
+                    :
+                    await _recipeService.GetRecipeListInformation(); // logged out users
+
+
+                if (RecipeListInformationDtos == null)
+                {
+                    return null;
+                }
+
+                return Ok(RecipeListInformationDtos);
+                
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         [Route("{id}")]
@@ -185,11 +219,6 @@ namespace Api.Controllers
             try
             {
                 var token = Request.Cookies["authToken"];
-
-                if (string.IsNullOrEmpty(token))
-                {
-                    return Unauthorized(new { message = "Unauhorized" });
-                }
 
                 var authResult = await IsAuthorizedAsAdminOrAuthor();
 
