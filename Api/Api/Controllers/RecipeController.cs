@@ -73,7 +73,10 @@ namespace Api.Controllers
             {
                 var claimsPrincipal = _jwtHandler.ValidateJwtToken(token);
 
-                loggedInUserId = claimsPrincipal.FindFirst("id")?.Value;
+                if (claimsPrincipal != null)
+                {
+                    loggedInUserId = claimsPrincipal.FindFirst("id")?.Value;
+                }
             }
 
             // Favorite recipes are only working for logged in users, show if logged in (recipeDto)
@@ -131,7 +134,7 @@ namespace Api.Controllers
                 {
                     loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
                 }
-                
+
                 List<RecipeListInformationDto?> RecipeListInformationDtos = loggedInUserId != null ?
                     await _recipeService.GetRecipeListInformation(loggedInUserId) // logged in users
                     :
@@ -144,7 +147,6 @@ namespace Api.Controllers
                 }
 
                 return Ok(RecipeListInformationDtos);
-                
             }
             catch (Exception e)
             {

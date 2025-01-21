@@ -61,10 +61,10 @@ namespace Api.Jwt
                     return principal; // Return the ClaimsPrincipal for further use
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Handle or log exceptions (e.g., token expired, invalid signature, etc.)
-                return null;
+                throw new Exception("ERROR: " + e.Message);
             }
 
             return null;
