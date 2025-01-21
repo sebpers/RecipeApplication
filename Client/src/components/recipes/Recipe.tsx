@@ -15,7 +15,11 @@ const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
 
   return (
     <RecipeCardComponent recipeId={id} classes={classes}>
-      <RecipeImageComponent recipeId={id} updateList={updateList} />
+      <RecipeImageComponent
+        recipeId={id}
+        updateList={updateList}
+        displayRecipeMenu={false}
+      />
       <CardTitleComponent
         title={title}
         favoritedBy={favoritedBy}

@@ -4,11 +4,15 @@ import { hasRole } from "../../../helpers/role";
 import CardMenuComponent from "./CardMenuComponent";
 import { deleteRecipe } from "../../../services/RecipeService";
 import ConfirmDeleteModalComponent from "../../common/modal/ConfirmDeleteModalComponent";
+import Recipe from "../../../types/Recipe";
+import ConfirmModelEditComponent from "../../common/modal/ConfirmModalEditComponent";
+import UpdateRecipeFormComponent from "../../forms/recipe/UpdateRecipeFormComponent";
 
 interface RecipeImageComponentProps {
-  authorId?: string;
-  recipeId: number | undefined;
-  updateList: () => void;
+  recipe: Recipe | null;
+  updateList?: () => void;
+  updateRecipe?: (id: number) => void;
+  displayMenu: string;
 }
 
 const RecipeImageComponent = (props: RecipeImageComponentProps) => {
@@ -17,8 +21,10 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const { user } = useAuth();
+  const { recipe, updateRecipe, updateList, displayMenu } = props;
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -42,20 +48,35 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
   }, [isDropdownOpen]);
 
   useEffect(() => {
-    const result = hasRole(user, ["Author"], props.authorId);
+    const result = hasRole(user, ["Author"], recipe?.userId);
     setIsRecipeAuthor(result);
-  }, [props.authorId]);
+  }, [recipe?.userId, user]);
 
-  const handleEdit = () => {
-    console.log("Action not implemented yet");
+  const showConfirmEditModal = () => {
+    setShowEditModal(true);
+  };
+
+  const onConfirmEdit = (answer: boolean): void => {
+    if (answer) {
+      handleEdit();
+    }
+    setShowEditModal(false);
+  };
+
+  const handleEdit = async () => {
+    if (recipe?.id && updateRecipe) {
+      updateRecipe(recipe.id);
+    } else {
+      throw "Recipe id not found";
+    }
   };
 
   const handleDelete = async () => {
-    if (props?.recipeId) {
-      const res = await deleteRecipe(props.recipeId);
+    if (recipe?.id) {
+      const res = await deleteRecipe(recipe?.id);
 
-      if (res?.deleted) {
-        props.updateList();
+      if (res?.deleted && updateList) {
+        updateList();
       }
     } else {
       throw "Recipe id not found";
@@ -66,7 +87,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
     setShowDeleteModal(true);
   };
 
-  const onConfirmDelete = (answer: boolean) => {
+  const onConfirmDelete = (answer: boolean): void => {
     if (answer) {
       handleDelete();
     }
@@ -83,7 +104,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
       />
 
       {/* Button to trigger dropdown */}
-      {isRecipeAuthor && (
+      {isRecipeAuthor && displayMenu && (
         <button
           id="dropdownMenuIconButton"
           onClick={handleMenuClick}
@@ -105,13 +126,22 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
       {isRecipeAuthor && isDropdownOpen && (
         <div className="absolute top-10 right-2" onClick={handleMenuClick}>
           <CardMenuComponent
-            onEdit={handleEdit}
+            onEdit={showConfirmEditModal}
             onDelete={showConfirmDeleteModal}
           />
         </div>
       )}
 
-      {showDeleteModal && (
+      {showEditModal && recipe && (
+        <ConfirmModelEditComponent title={`${recipe.title}`}>
+          <UpdateRecipeFormComponent
+            onConfirm={onConfirmEdit}
+            recipe={recipe}
+          />
+        </ConfirmModelEditComponent>
+      )}
+
+      {showDeleteModal && recipe && (
         <ConfirmDeleteModalComponent
           onConfirm={onConfirmDelete}
           title="recipe"

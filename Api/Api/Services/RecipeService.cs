@@ -103,6 +103,7 @@ namespace Api.Services
             recipeModel.Title = request.Title;
             recipeModel.Description = request.Description;
             recipeModel.Ingredients = request.Ingredients;
+            recipeModel.Instructions = request.Instructions;
             recipeModel.UpdatedAt = DateTime.Now;
 
             Recipe updatedRecipe = await _recipeRepo.UpdateAsync(recipeModel);

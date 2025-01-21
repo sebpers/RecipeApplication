@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { CreateRecipeProp } from "../interfaces/CreateRecipe.ts";
 import Recipe from "../types/Recipe";
+import { UpdateRecipeProp } from "../interfaces/updateRecipe.ts";
 
 const API_PREFIX = "http://localhost:5098/api/recipes";
 
@@ -31,14 +32,14 @@ export const getRecipesListInformation = async () => {
   return recipeList;
 };
 
-export const getById = async (id: string): Promise<Recipe> => {
+export const getById = async (id: number | string): Promise<Recipe> => {
   const recipe = await axios
     .get(`${API_PREFIX}/${id}`, { withCredentials: true })
     .then((response) => {
       return response.data;
     })
     .catch((error) => {
-      console.log(error);
+      return error;
     });
 
   if (!recipe) {
@@ -59,6 +60,19 @@ export const createRecipe = async (body: CreateRecipeProp) => {
     });
 
   return createdRecipe;
+};
+
+export const updateRecipe = async (id: number, body: UpdateRecipeProp) => {
+  const updatedRecipe: Recipe = await axios
+    .put(`${API_PREFIX}/${id}`, body, { withCredentials: true })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+
+  return updatedRecipe;
 };
 
 export const deleteRecipe = async (id: number) => {

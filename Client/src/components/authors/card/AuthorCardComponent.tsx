@@ -1,5 +1,5 @@
 import CardLinkWrapperComponent from "../../common/card/CardLinkWrapperComponent";
-import CardTitleComponent from "../../common/card/CardTitleComponent";
+// import CardTitleComponent from "../../common/card/CardTitleComponent";
 import { AuthorLimitedInfo } from "../AuthorList";
 import AuthorCardImageComponent from "./AuthorCardImageComponent";
 
@@ -8,7 +8,8 @@ const AuthorCardComponent = ({ author }: { author: AuthorLimitedInfo }) => {
     <div className="border border-2 shadow-lg m-5 p-3" key={author?.id}>
       <CardLinkWrapperComponent path={`/author/${author.id}`}>
         <AuthorCardImageComponent authorId={author.id} />
-        <CardTitleComponent title={`${author.firstName} ${author.lastName}`} />
+        {/* <CardTitleComponent title={`${author.firstName} ${author.lastName}`} /> */}{" "}
+        {/* Rethink this */}
       </CardLinkWrapperComponent>
     </div>
   );

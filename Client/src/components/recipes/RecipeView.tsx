@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { getById } from "../../services/RecipeService.ts";
 import Recipe from "../../types/Recipe.tsx";
@@ -12,13 +12,11 @@ import CardTitleComponent from "../common/card/CardTitleComponent.tsx";
 const RecipeView = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const { id } = useParams();
-  const navigate: NavigateFunction = useNavigate();
 
   const fetchRecipeListInformation = async () => {
     try {
       if (id) {
         const result: Recipe = await getById(id.toString());
-        console.log("result: ", result);
         setRecipe(result);
       }
     } catch (error) {
@@ -30,16 +28,23 @@ const RecipeView = () => {
     fetchRecipeListInformation();
   }, []);
 
-  const navigateAway = async () => {
-    navigate("/");
+  const updateRecipe = async (id: number) => {
+    try {
+      const result = await getById(id);
+      if (result) {
+        setRecipe(result);
+      }
+    } catch (error) {
+      console.error("ERROR: ", error);
+    }
   };
 
   return (
     <div className="border shadow-lg my-6 m:w-2/4 h-auto pb-2 mx-auto">
       <RecipeImageComponent
-        recipeId={recipe?.id}
-        authorId={recipe?.userId}
-        updateList={navigateAway}
+        recipe={recipe}
+        updateRecipe={updateRecipe}
+        displayMenu="true"
       />
 
       <div className="p-3">
