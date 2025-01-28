@@ -8,6 +8,7 @@ import { updateDescription } from "../services/UserService";
 import SecondaryButtonComponent from "../components/common/buttons/SecondaryButtonComponent";
 import SubmitButtonComponent from "../components/common/buttons/SubmitButtonComponent";
 import AuthorTabComponent from "../components/authors/page/AuthorTabComponent";
+import { useRoleGuard } from "../hooks/auth/useRoleGuard";
 
 const MyPage = () => {
   const { user } = useAuth();
@@ -23,6 +24,8 @@ const MyPage = () => {
   const [description, setDescription] = useState<string | undefined>(
     user?.description
   );
+
+  useRoleGuard(["Author", "Admin"]);
 
   const fetchRecipes = async () => {
     if (user?.id) {
