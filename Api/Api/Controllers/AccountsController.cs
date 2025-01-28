@@ -43,6 +43,7 @@ namespace Api.Controllers
             }
 
             User userModel = _mapper.Map<User>(userForRegistration);
+            userModel.CreatedAt = DateTime.Now;
             var result = await _userManager.CreateAsync(userModel, userForRegistration.Password);
 
             if (!result.Succeeded)
