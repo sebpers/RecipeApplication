@@ -4,12 +4,14 @@ import { login } from "../services/AuthService";
 import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/auth/useAuth";
 import { toast } from "react-toastify";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { setIsAuthenticated } = useAuth();
 
@@ -52,14 +54,20 @@ const LoginPage = () => {
             />
           </div>
 
-          <div className="flex flex-col border border-2">
+          <div className="relative w-full">
             <input
-              className="p-4 rounded"
-              type="password"
+              className="p-4 pr-12 rounded w-full border border-gray-300"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <div
+              className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEyeOff size="20" /> : <FiEye size="20" />}
+            </div>
           </div>
 
           {error && <p className="text-red-500">{error}</p>}

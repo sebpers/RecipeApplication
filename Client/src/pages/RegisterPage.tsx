@@ -125,42 +125,37 @@ const RegisterPage = () => {
             />
           </div>
 
-          <div className="flex items-center w-full">
+          <div className="relative w-full">
             <input
-              className="flex-grow p-4 mr-2 rounded border border-2 "
+              className="p-4 pr-12 rounded w-full border border-gray-300"
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div>
-              {showPassword ? (
-                <FiEyeOff size="25" onClick={() => setShowPassword(false)} />
-              ) : (
-                <FiEye size="25" onClick={() => setShowPassword(true)} />
-              )}
+            <div
+              className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEyeOff size="20" /> : <FiEye size="20" />}
             </div>
           </div>
 
           <div className="mb-6">{fieldErrors("Password")}</div>
 
-          <div className="flex items-center">
+          <div className="relative w-full">
             <input
-              className="flex-grow p-4 mr-2 rounded border border-2"
+              className="p-4 pr-12 rounded w-full border border-gray-300"
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm password"
+              placeholder="Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <div>
-              {showConfirmPassword ? (
-                <FiEyeOff
-                  size="25"
-                  onClick={() => setShowConfirmPassword(false)}
-                />
-              ) : (
-                <FiEye size="25" onClick={() => setShowConfirmPassword(true)} />
-              )}
+            <div
+              className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {confirmPassword ? <FiEyeOff size="20" /> : <FiEye size="20" />}
             </div>
           </div>
 

@@ -121,9 +121,10 @@ const NavbarComponent = () => {
                     <li className="px-4 py-2 hover:bg-gray-100">Favorites</li>
                   </Link>
 
-                  <Link to="/settings">
+                  {/* Will be implemented later on */}
+                  {/* <Link to="/settings">
                     <li className="px-4 py-2 hover:bg-gray-100">Settings</li>
-                  </Link>
+                  </Link>*/}
 
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
