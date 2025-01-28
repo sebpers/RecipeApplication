@@ -11,7 +11,8 @@ import {
 
 const CustomLineChart = ({ data }) => {
   return (
-    <div className="shadow-xl w-full h-80">
+    <div className="chart-container shadow-xl w-full h-auto mt-2 pb-5">
+      <p className="text-center italic">Users created</p>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}

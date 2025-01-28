@@ -22,11 +22,8 @@ export const DashboardStatisticUsersPage = () => {
       <div className="lg:col-span-2 sm:col-span-2">
         <CustomPieChart data={roles} title="Roles" />
       </div>
-      <div className="lg:col-span-2 sm:col-span-2">
-        <CustomPieChart data={usersCreatedAt} title="Users Created" />
-      </div>
 
-      <div className="sm:col-span-2 lg:col-span-4">
+      <div className="lg:col-span-2 sm:col-span-2">
         <CustomLineChart data={usersCreatedAt} />
       </div>
     </div>

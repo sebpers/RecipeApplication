@@ -1,6 +1,5 @@
 ﻿using Api.Dtos;
 using Api.Dtos.Recipe;
-using Api.Entities;
 using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Jwt;

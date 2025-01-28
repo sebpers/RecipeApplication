@@ -128,6 +128,7 @@ const CustomPieChart = ({ data, colors = [], dataKey = "value", title }) => {
     >
       {/* Toggle Button for this specific pie chart */}
       <div style={{ textAlign: "center", marginTop: "10px" }}>
+        <p className="italic">{title}</p>
         <label>
           <input
             type="checkbox"
@@ -137,7 +138,6 @@ const CustomPieChart = ({ data, colors = [], dataKey = "value", title }) => {
           />
           {showPercentage ? "Show Actual Value" : "Show Percentage"}
         </label>
-        <p className="italic">{title}</p>
       </div>
 
       <ResponsiveContainer width="100%" height="100%">

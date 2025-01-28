@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import SearchComponent from "../components/common/search/SearchComponent";
 import { queryUserWithRoles } from "../interfaces/query/queries";
 import useAuth from "../hooks/auth/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const DashboardUsers = () => {
   const { user } = useAuth();
@@ -30,7 +31,38 @@ const DashboardUsers = () => {
         fontWeight: "bold",
       },
     },
+    {
+      when: (row: queryUserWithRoles) => row.roles.includes("Author"),
+      style: {
+        backgroundColor: "#fff9ae",
+      },
+    },
+    {
+      when: (row: queryUserWithRoles) =>
+        row.roles.includes("Admin") && row.id !== user?.id,
+      style: {
+        backgroundColor: "#7baede",
+      },
+    },
+    {
+      when: (row: queryUserWithRoles) => !row.roles?.length,
+      style: {
+        backgroundColor: "#ff6969",
+      },
+    },
   ];
+
+  const navigate = useNavigate();
+
+  const handleRowClick = (row) => {
+    if (row.roles.includes("Author")) {
+      navigate(`/author/${row.id}`);
+    }
+
+    if (row.id === user?.id) {
+      navigate("/my");
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -161,6 +193,9 @@ const DashboardUsers = () => {
           aria-label="User data table"
           noDataComponent="No users found"
           striped
+          onRowClicked={handleRowClick} // Handle row clicks
+          highlightOnHover // Optional: Highlight row on hover for better UX
+          pointerOnHover // Optional: Change cursor to pointer on hover
         />
       </div>
     </>
