@@ -155,7 +155,11 @@ const RegisterPage = () => {
               className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              {confirmPassword ? <FiEyeOff size="20" /> : <FiEye size="20" />}
+              {showConfirmPassword ? (
+                <FiEyeOff size="20" />
+              ) : (
+                <FiEye size="20" />
+              )}
             </div>
           </div>
 
