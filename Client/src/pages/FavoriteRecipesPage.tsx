@@ -33,10 +33,11 @@ const FavoriteRecipesPage = () => {
 
   return (
     <div className="container">
-      <div className="flex flex-wrap justify-center items-start space-x-10 min-w-full max-w-screen-md min-w-80">
+      <div className="flex flex-wrap justify-center items-start md:space-x-10 min-w-full max-w-screen-md min-w-80">
         {favoriteRecipes?.length ? (
           favoriteRecipes.map((r: RecipeListInformation) => (
             <Recipe
+              classes="!w-60"
               recipe={r}
               key={r.id}
               updateList={updateFavoriteRecipeList}
