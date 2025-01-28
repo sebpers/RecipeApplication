@@ -15,6 +15,8 @@ namespace Api.Dtos
         [Required]
         [MaxLength(500, ErrorMessage = "Name cannot be greater than 500")]
         public string? Description { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public List<string> Roles { get; set; } = new List<string>();
         [Required]
         public DateTime CreatedAt { get; set; }
 

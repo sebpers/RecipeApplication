@@ -10,15 +10,34 @@ import MyPage from "./pages/MyPage";
 import AuthProvider from "./context/auth/AuthProvider";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import AuthorListPage from "./pages/AuthorListPage";
-import { validateUserToken } from "./services/AuthService";
+import { getMe, validateUserToken } from "./services/AuthService";
 import ProtectedRoute from "./helpers/protection/ProtectedRoute";
 import FavoriteRecipesPage from "./pages/FavoriteRecipesPage";
+import DashboardPage from "./pages/DashboardPage";
+import DashboardUsers from "./pages/DashboardUsers";
+import { DashboardStatisticUsersPage } from "./pages/DashboardStatisticUsersPage";
 
 function App() {
   const isAuthenticated = async (): Promise<boolean> => {
     const response = await validateUserToken();
 
     return response.status === 200;
+  };
+
+  const isAdmin = async (): Promise<boolean> => {
+    const response = await getMe();
+
+    return (await isAuthenticated()) && response.data?.roles?.includes("Admin");
+  };
+
+  const isAdminOrAuthor = async (): Promise<boolean> => {
+    const response = await getMe();
+
+    return (
+      (await isAuthenticated()) &&
+      (response.data?.roles?.includes("Author") ||
+        response.data?.roles?.includes("Admin"))
+    );
   };
 
   return (
@@ -35,7 +54,7 @@ function App() {
             {/* Protected routes */}
             <Route
               path="my"
-              element={<ProtectedRoute isAuthenticated={isAuthenticated} />}
+              element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
             >
               <Route index element={<MyPage />} />
               <Route path="create-recipe" element={<CreateRecipePage />} />
@@ -43,6 +62,20 @@ function App() {
                 path="favorite-recipes"
                 element={<FavoriteRecipesPage />}
               />
+            </Route>
+
+            {/* Protected routes */}
+            <Route
+              path="dashboard"
+              element={<ProtectedRoute isAuthenticated={isAdmin} />}
+            >
+              <Route element={<DashboardPage />}>
+                <Route path="users" index element={<DashboardUsers />} />
+                <Route
+                  path="statistics/users"
+                  element={<DashboardStatisticUsersPage />}
+                />
+              </Route>
             </Route>
 
             <Route path="author/:id" element={<AccountPage />} />

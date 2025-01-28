@@ -1,6 +1,5 @@
 ﻿using Api.Dtos;
 using Api.Entities;
-using Api.Mapper;
 
 namespace Api.Interfaces.Repository
 {
@@ -9,5 +8,7 @@ namespace Api.Interfaces.Repository
         Task UpdateUserDescriptionAsync(User? userModel);
         Task<User?> GetByIdAsync(string id);
         Task<IList<string>?> GetRolesByUserAsync(User userModel);
+        Task<(List<QueryUserWithRolesDto>, int)> GetQueriedUsersAsync(string sortBy, string sortOrder, int pageNumber, int pageSize, string search);
+        Task<List<UserWithRolesDto>> GetUsersWithRolesAsync();
     }
 }

@@ -1,5 +1,8 @@
 ﻿using Api.Dtos;
+using Api.Dtos.Pagination;
+using Api.Dtos.Statistic;
 using Api.Entities;
+using Api.Requests.Query;
 
 namespace Api.Interfaces.Service
 {
@@ -11,5 +14,7 @@ namespace Api.Interfaces.Service
         Task<bool> IsSameUser(string userId, string token);
         bool IsLoggedInUserAdmin(string token);
         Task<bool> IsAdminOrAuthor(string userId);
+        Task<PaginatedResponseDto<QueryUserWithRolesDto>> GetQueriedUsersAsync(UserQueryParamRequest queryParams);
+        Task<UserStatisticResponseDto> GetUserStatistics();
     }
 }

@@ -3,12 +3,10 @@ using Api.Entities;
 using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Mapper;
-using Api.Services;
-using Microsoft.AspNetCore.Authorization;
+using Api.Requests.Query;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace Api.Controllers
 {
@@ -65,6 +63,60 @@ namespace Api.Controllers
                     .FirstOrDefaultAsync(u => u.Id == id);
 
                 return Ok(new { user = userModel?.ToUserDto() });
+        }
+
+        [HttpGet("dashboard/users/statistics")]
+        public async Task<IActionResult> GetUserStatistics()
+        {
+            var token = Request.Cookies["authToken"];
+
+            if (token == null)
+            {
+                return Unauthorized(new { message = "Not authenticated" });
+            }
+
+            if (!_userService.IsLoggedInUserAdmin(token))
+            {
+                return Unauthorized(new { message = "Unauthorized" });
+            }
+
+            try
+            {
+                var result = await _userService.GetUserStatistics();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return a server error response
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred while retrieving users." });
+            }
+        }
+
+        [HttpGet("dashboard/query-users")]
+        public async Task<IActionResult> GetQueryUsersParam([FromQuery] UserQueryParamRequest queryParams)
+        {
+            var token = Request.Cookies["authToken"];
+
+            if (token == null)
+            {
+                return Unauthorized(new { message = "Not authenticated" });
+            }
+
+            if (!_userService.IsLoggedInUserAdmin(token))
+            {
+                return Unauthorized(new { message = "Unauthorized" });
+            }
+
+            try
+            {
+                var result = await _userService.GetQueriedUsersAsync(queryParams);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return a server error response
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred while retrieving users." });
+            }
         }
 
         [HttpPut("my/edit/description/{userId}")]

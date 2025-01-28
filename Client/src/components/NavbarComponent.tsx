@@ -106,6 +106,12 @@ const NavbarComponent = () => {
                     </Link>
                   )}
 
+                  {user?.roles?.includes("Admin") && (
+                    <Link to="/dashboard/users">
+                      <li className="px-4 py-2 hover:bg-gray-100">Dashboard</li>
+                    </Link>
+                  )}
+
                   <Link
                     to={{
                       pathname: "my/favorite-recipes",
