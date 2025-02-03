@@ -34,20 +34,20 @@ const DashboardUsers = () => {
     {
       when: (row: queryUserWithRoles) => row.roles.includes("Author"),
       style: {
-        backgroundColor: "#fff9ae",
+        backgroundColor: "#fdfdea",
       },
     },
     {
       when: (row: queryUserWithRoles) =>
         row.roles.includes("Admin") && row.id !== user?.id,
       style: {
-        backgroundColor: "#7baede",
+        backgroundColor: "#ebf5ff",
       },
     },
     {
       when: (row: queryUserWithRoles) => !row.roles?.length,
       style: {
-        backgroundColor: "#ff6969",
+        backgroundColor: "#ffebee",
       },
     },
   ];
@@ -207,7 +207,6 @@ const DashboardUsers = () => {
           responsive
           aria-label="User data table"
           noDataComponent="No users found"
-          striped
           onRowClicked={handleRowClick} // Handle row clicks
           highlightOnHover // Optional: Highlight row on hover for better UX
           pointerOnHover // Optional: Change cursor to pointer on hover
