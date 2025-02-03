@@ -3,7 +3,7 @@ import { getQueryUsersParam } from "../services/UserService";
 import DataTable from "react-data-table-component";
 import { format } from "date-fns";
 import SearchComponent from "../components/common/search/SearchComponent";
-import { queryUserWithRoles } from "../interfaces/query/queries";
+import { queryUserWithRoles } from "../interfaces/query/userQueries";
 import useAuth from "../hooks/auth/useAuth";
 import { useNavigate } from "react-router-dom";
 

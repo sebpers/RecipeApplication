@@ -64,7 +64,7 @@ namespace Api.Services
             return userWithRoles;
         }
 
-        public async Task<PaginatedResponseDto<QueryUserWithRolesDto>> GetQueriedUsersAsync(UserQueryParamRequest queryParams)
+        public async Task<PaginatedResponseDto<QueryUserWithRolesDto>> GetQueriedUsersAsync(QueryParamRequest queryParams)
         {
             var (users, totalCount) = await _userRepository.GetQueriedUsersAsync(
             queryParams.SortBy,

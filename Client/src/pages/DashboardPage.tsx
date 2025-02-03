@@ -76,7 +76,7 @@ const DashboardPage = () => {
           <Sidebar.Items>
             <Sidebar.ItemGroup>
               <Sidebar.Item icon={HiChartPie}>Dashboard</Sidebar.Item>
-
+              <hr />
               <Link to="users">
                 <Sidebar.Item icon={HiOutlineUsers}>Users</Sidebar.Item>
               </Link>

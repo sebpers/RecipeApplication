@@ -1,8 +1,10 @@
 ﻿using Api.Dtos;
+using Api.Dtos.Pagination;
 using Api.Dtos.Recipe;
 using Api.Interfaces.Helpers;
 using Api.Interfaces.Service;
 using Api.Jwt;
+using Api.Requests.Query;
 using Api.Requests.Recipe;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -139,6 +141,38 @@ namespace Api.Controllers
                     :
                     await _recipeService.GetRecipeListInformation(); // logged out users
 
+
+                if (RecipeListInformationDtos == null)
+                {
+                    return null;
+                }
+
+                return Ok(RecipeListInformationDtos);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [Route("list-information/pagination")]
+        [HttpGet]
+        public async Task<IActionResult> GetRecipeListInformationByPagination([FromQuery] QueryParamRequest queryParams)
+        {
+            try
+            {
+                string token = Request.Cookies["authToken"];
+                string? loggedInUserId = null;
+
+                if (token != null)
+                {
+                    loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
+                }
+
+                PaginatedResponseDto<RecipeListInformationDto> RecipeListInformationDtos = loggedInUserId != null ?
+                    await _recipeService.GetRecipeListInformationByPagination(loggedInUserId, queryParams) // logged in users
+                    :
+                    await _recipeService.GetRecipeListInformationByPagination(queryParams); // logged out users
 
                 if (RecipeListInformationDtos == null)
                 {

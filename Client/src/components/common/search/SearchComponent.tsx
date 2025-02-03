@@ -17,6 +17,7 @@ const SearchComponent = (prop: searchComponentInterfaceProp) => {
       value={searchTerm}
       onChange={handleSearchChange}
       placeholder={placeholderText}
+      autoFocus
     />
   );
 };

@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   getQueryUsersType,
   queriedUserResponse,
-} from "../interfaces/query/queries";
+} from "../interfaces/query/userQueries";
 
 const API_PREFIX = "http://localhost:5098/api/users";
 

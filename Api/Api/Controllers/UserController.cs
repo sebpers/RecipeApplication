@@ -93,7 +93,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("dashboard/query-users")]
-        public async Task<IActionResult> GetQueryUsersParam([FromQuery] UserQueryParamRequest queryParams)
+        public async Task<IActionResult> GetQueryUsersParam([FromQuery] QueryParamRequest queryParams)
         {
             var token = Request.Cookies["authToken"];
 

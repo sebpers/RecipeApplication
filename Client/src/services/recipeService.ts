@@ -32,6 +32,34 @@ export const getRecipesListInformation = async () => {
   return recipeList;
 };
 
+export const getRecipesListInformationByPagination = async (
+  pageNumber: number,
+  pageSize: number,
+  search: string
+) => {
+  try {
+    const recipeList = await axios
+      .get(`${API_PREFIX}/list-information/pagination`, {
+        params: {
+          pageNumber,
+          pageSize,
+          search,
+        },
+        withCredentials: true,
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    return recipeList;
+  } catch (error: unknown) {
+    throw new Error(error);
+  }
+};
+
 export const getById = async (id: number | string): Promise<Recipe> => {
   const recipe = await axios
     .get(`${API_PREFIX}/${id}`, { withCredentials: true })

@@ -1,9 +1,11 @@
 ﻿using Api.Dtos;
+using Api.Dtos.Pagination;
 using Api.Dtos.Recipe;
 using Api.Entities;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Mapper;
+using Api.Requests.Query;
 using Api.Requests.Recipe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +51,56 @@ namespace Api.Services
                 .ToList();
 
             return recipeListInformationDtos;
+        }
+
+        // For logged in users
+        public async Task<PaginatedResponseDto<RecipeListInformationDto>> GetRecipeListInformationByPagination(string loggedInUserId, QueryParamRequest queryParams)
+        {
+            var query = _recipeRepo.GetAllAsQuery();
+
+            if (!string.IsNullOrEmpty(queryParams.Search))
+            {
+                query = query.Where(r => r.Author.Contains(queryParams.Search) || r.Title.Contains(queryParams.Search));
+            }
+
+            var totalRecords = await query.CountAsync();
+
+            var recipes = await query
+                .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize)
+                .ToListAsync();
+
+            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
+                .Select(r => r.ToRecipeListInformationDto(loggedInUserId))
+                .ToList();
+
+            return new PaginatedResponseDto<RecipeListInformationDto>
+            {
+                Items = recipeListInformationDtos,
+                TotalCount = totalRecords
+            };
+        }
+
+        // For none logged in users
+        public async Task<PaginatedResponseDto<RecipeListInformationDto>> GetRecipeListInformationByPagination(QueryParamRequest queryParams)
+        {
+            var query = _recipeRepo.GetAllAsQuery();
+            var totalRecords = await query.CountAsync();
+
+            var recipes = await query
+                .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
+                .Take(queryParams.PageSize)
+                .ToListAsync();
+
+            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
+                .Select(r => r.ToRecipeListInformationDto())
+                .ToList();
+
+            return new PaginatedResponseDto<RecipeListInformationDto>
+            {
+                Items = recipeListInformationDtos,
+                TotalCount = totalRecords
+            };
         }
 
         public async Task<RecipeDto?> GetByIdAsync(int id, string userId)

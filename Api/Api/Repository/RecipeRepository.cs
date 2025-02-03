@@ -23,6 +23,15 @@ namespace Api.Repository
                 .ToListAsync();
         }
 
+        public IQueryable<Recipe> GetAllAsQuery()
+        {
+            return _context.Recipes
+                .Include(recipe => recipe.Comments)
+                .Include(recipe => recipe.User)
+                .Include(recipe => recipe.FavoritedBy)
+                .AsQueryable();
+        }
+
         public async Task<Recipe> GetByIdAsync(int id)
         {
             return await _context.Recipes

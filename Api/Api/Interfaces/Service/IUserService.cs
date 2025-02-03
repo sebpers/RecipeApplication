@@ -14,7 +14,7 @@ namespace Api.Interfaces.Service
         Task<bool> IsSameUser(string userId, string token);
         bool IsLoggedInUserAdmin(string token);
         Task<bool> IsAdminOrAuthor(string userId);
-        Task<PaginatedResponseDto<QueryUserWithRolesDto>> GetQueriedUsersAsync(UserQueryParamRequest queryParams);
+        Task<PaginatedResponseDto<QueryUserWithRolesDto>> GetQueriedUsersAsync(QueryParamRequest queryParams);
         Task<UserStatisticResponseDto> GetUserStatistics();
     }
 }
