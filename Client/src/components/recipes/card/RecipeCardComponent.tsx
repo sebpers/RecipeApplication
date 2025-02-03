@@ -14,7 +14,7 @@ const RecipeCardComponent = ({
   return (
     <Link
       to={`/recipes/recipe/${recipeId}`}
-      className={`relative w-80 border shadow-lg my-6 pb-2 ${classes}`}
+      className={`relative w-80 border shadow-lg rounded-xl my-6 pb-2 ${classes}`}
     >
       {children}
     </Link>

@@ -18,7 +18,7 @@ const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
       <RecipeImageComponent
         recipeId={id}
         updateList={updateList}
-        displayRecipeMenu={false}
+        displayRecipeMenu={false} // Only display menu when recipe is clicked
       />
       <CardTitleComponent
         title={title}

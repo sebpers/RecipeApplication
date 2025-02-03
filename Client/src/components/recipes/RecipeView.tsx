@@ -40,7 +40,7 @@ const RecipeView = () => {
   };
 
   return (
-    <div className="border shadow-lg my-6 m:w-2/4 h-auto pb-2 mx-auto">
+    <div className="border shadow-lg my-6 m:w-2/4 h-auto pb-2 mx-auto rounded-xl">
       <RecipeImageComponent
         recipe={recipe}
         updateRecipe={updateRecipe}

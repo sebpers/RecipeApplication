@@ -5,7 +5,10 @@ import AuthorCardImageComponent from "./AuthorCardImageComponent";
 
 const AuthorCardComponent = ({ author }: { author: AuthorLimitedInfo }) => {
   return (
-    <div className="border border-2 shadow-lg m-5 p-3" key={author?.id}>
+    <div
+      className="border border-2 shadow-lg m-5 p-3 rounded-xl"
+      key={author?.id}
+    >
       <CardLinkWrapperComponent path={`/author/${author.id}`}>
         <AuthorCardImageComponent authorId={author.id} />
         {/* Rethink this */}

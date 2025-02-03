@@ -100,10 +100,10 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
       <img
         src="https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/ras/Assets/c3235163-5697-4911-84e9-633c78c9a35b/Derivates/c15df8ba-50ba-4d77-8292-bac5014b9cb0.jpg"
         alt="Recipe Image"
-        className="w-full h-auto"
+        className="w-full h-auto rounded-xl"
       />
 
-      {/* Button to trigger dropdown */}
+      {/* Button to trigger dropdown - only display menu when recipe is clicked */}
       {isRecipeAuthor && displayMenu && (
         <button
           id="dropdownMenuIconButton"
@@ -122,7 +122,6 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           </svg>
         </button>
       )}
-
       {isRecipeAuthor && isDropdownOpen && (
         <div className="absolute top-10 right-2" onClick={handleMenuClick}>
           <CardMenuComponent
@@ -131,7 +130,6 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           />
         </div>
       )}
-
       {showEditModal && recipe && (
         <ConfirmModelEditComponent title={`${recipe.title}`}>
           <UpdateRecipeFormComponent
@@ -140,7 +138,6 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           />
         </ConfirmModelEditComponent>
       )}
-
       {showDeleteModal && recipe && (
         <ConfirmDeleteModalComponent
           onConfirm={onConfirmDelete}

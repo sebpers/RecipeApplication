@@ -1,8 +1,8 @@
 const HeroComponent = () => {
   return (
-    <div className="mx-auto flex flex-col shadow-xl border border-1 p-5">
-      <main>
-        <section>
+    <div className="mx-auto flex flex-col shadow-xl border border-1 p-5 w-full">
+      <main className="w-full">
+        <section className="w-full">
           <h1 className="text-7xl">DUMMY DATA HERE</h1>
           <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
