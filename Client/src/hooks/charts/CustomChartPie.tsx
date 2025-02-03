@@ -34,9 +34,9 @@ const generateColors = (num) => {
 };
 
 const CustomPieChart = ({ data, colors = [], dataKey = "value", title }) => {
-  const [showPercentage, setShowPercentage] = useState(true);
+  const [showPercentage, setShowPercentage] = useState<boolean>(true);
   const containerRef = useRef(null); // Ref to calculate size dynamically
-  const [outerRadius, setOuterRadius] = useState(80);
+  const [outerRadius, setOuterRadius] = useState<number>(80);
 
   // Ensure correct size calculation on render
   useEffect(() => {
@@ -122,11 +122,10 @@ const CustomPieChart = ({ data, colors = [], dataKey = "value", title }) => {
       className="chart-container shadow-xl w-full sm:w-full h-auto"
       style={{
         aspectRatio: "1", // Ensure the container keeps a 1:1 aspect ratio
-        boxSizing: "border-box", // Include padding and border in element's total width and height
+        boxSizing: "border-box",
         width: "100%",
       }}
     >
-      {/* Toggle Button for this specific pie chart */}
       <div style={{ textAlign: "center", marginTop: "10px" }}>
         <p className="italic">{title}</p>
         <label>

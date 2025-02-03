@@ -175,9 +175,24 @@ const DashboardUsers = () => {
         />
       </div>
 
+      <div className="space-x-2 mt-5">
+        <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-red-600/10 ring-inset">
+          No role
+        </span>
+        <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset">
+          Visitor
+        </span>
+        <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-yellow-600/20 ring-inset">
+          Author
+        </span>
+        <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10 ring-inset">
+          Admin
+        </span>
+      </div>
+
       <div className="overflow-x-auto">
         <DataTable
-          title="Users"
+          title="Users in database"
           columns={columns}
           data={users}
           pagination
