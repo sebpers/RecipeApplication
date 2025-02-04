@@ -19,19 +19,6 @@ export const getMyRecipes = async (userId: string) => {
   }
 };
 
-export const getRecipesListInformation = async () => {
-  const recipeList = await axios
-    .get(`${API_PREFIX}/list-information`, { withCredentials: true })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  return recipeList;
-};
-
 export const getRecipesListInformationByPagination = async (
   pageNumber: number,
   pageSize: number,

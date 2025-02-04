@@ -36,24 +36,14 @@ namespace Api.Services
         {
             List<Recipe> recipes = await _recipeRepo.GetAllAsync();
             List<RecipeListInformationDto?> recipeListInformationDtos = recipes
-                .Select(r => r.ToRecipeListInformationDto(loggedInUserId))
+                .Select(r => loggedInUserId != null
+                    ? r.ToRecipeListInformationDto(loggedInUserId)
+                    : r.ToRecipeListInformationDto())
                 .ToList();
 
             return recipeListInformationDtos;
         }
 
-        // For people who are not logged in
-        public async Task<List<RecipeListInformationDto?>> GetRecipeListInformation()
-        {
-            List<Recipe> recipes = await _recipeRepo.GetAllAsync();
-            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
-                .Select(r => r.ToRecipeListInformationDto())
-                .ToList();
-
-            return recipeListInformationDtos;
-        }
-
-        // For logged in users
         public async Task<PaginatedResponseDto<RecipeListInformationDto>> GetRecipeListInformationByPagination(string loggedInUserId, QueryParamRequest queryParams)
         {
             var query = _recipeRepo.GetAllAsQuery();
@@ -71,29 +61,9 @@ namespace Api.Services
                 .ToListAsync();
 
             List<RecipeListInformationDto?> recipeListInformationDtos = recipes
-                .Select(r => r.ToRecipeListInformationDto(loggedInUserId))
-                .ToList();
-
-            return new PaginatedResponseDto<RecipeListInformationDto>
-            {
-                Items = recipeListInformationDtos,
-                TotalCount = totalRecords
-            };
-        }
-
-        // For none logged in users
-        public async Task<PaginatedResponseDto<RecipeListInformationDto>> GetRecipeListInformationByPagination(QueryParamRequest queryParams)
-        {
-            var query = _recipeRepo.GetAllAsQuery();
-            var totalRecords = await query.CountAsync();
-
-            var recipes = await query
-                .Skip((queryParams.PageNumber - 1) * queryParams.PageSize)
-                .Take(queryParams.PageSize)
-                .ToListAsync();
-
-            List<RecipeListInformationDto?> recipeListInformationDtos = recipes
-                .Select(r => r.ToRecipeListInformationDto())
+                .Select(r => loggedInUserId != null
+                    ? r.ToRecipeListInformationDto(loggedInUserId)
+                    : r.ToRecipeListInformationDto())
                 .ToList();
 
             return new PaginatedResponseDto<RecipeListInformationDto>

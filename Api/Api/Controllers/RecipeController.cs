@@ -122,39 +122,6 @@ namespace Api.Controllers
             return Ok(recipeDtos);
         }
 
-        [Route("list-information")]
-        [HttpGet]
-        public async Task<IActionResult> GetRecipeListInformation()
-        {
-            try
-            {
-                string token = Request.Cookies["authToken"];
-                string? loggedInUserId = null;
-
-                if (token != null)
-                {
-                    loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
-                }
-
-                List<RecipeListInformationDto?> RecipeListInformationDtos = loggedInUserId != null ?
-                    await _recipeService.GetRecipeListInformation(loggedInUserId) // logged in users
-                    :
-                    await _recipeService.GetRecipeListInformation(); // logged out users
-
-
-                if (RecipeListInformationDtos == null)
-                {
-                    return null;
-                }
-
-                return Ok(RecipeListInformationDtos);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
         [Route("list-information/pagination")]
         [HttpGet]
         public async Task<IActionResult> GetRecipeListInformationByPagination([FromQuery] QueryParamRequest queryParams)
@@ -169,10 +136,7 @@ namespace Api.Controllers
                     loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
                 }
 
-                PaginatedResponseDto<RecipeListInformationDto> RecipeListInformationDtos = loggedInUserId != null ?
-                    await _recipeService.GetRecipeListInformationByPagination(loggedInUserId, queryParams) // logged in users
-                    :
-                    await _recipeService.GetRecipeListInformationByPagination(queryParams); // logged out users
+                PaginatedResponseDto<RecipeListInformationDto> RecipeListInformationDtos = await _recipeService.GetRecipeListInformationByPagination(loggedInUserId, queryParams);
 
                 if (RecipeListInformationDtos == null)
                 {
