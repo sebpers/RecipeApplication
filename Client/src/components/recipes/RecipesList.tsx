@@ -96,9 +96,8 @@ const RecipesList = () => {
             />
           </div>
 
-          <div className="flex justify-between items-center my-4">
+          <div className="flex items-center my-4">
             <label className="text-sm text-gray-700">
-              Recipes per page:
               <select
                 value={pageSize}
                 onChange={handlePageSizeChange}
@@ -131,11 +130,27 @@ const RecipesList = () => {
         <LoadingComponent />
       )}
 
-      <PaginateComponent
-        currentPage={pageNumber}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      <div className="flex justify-center flex-wrap items-center my-4 border-t">
+        <label className="text-sm text-gray-700">
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            className="ml-2 border border-gray-300 rounded-md px-2 py-1"
+          >
+            {dropdownPages.map((p, i) => (
+              <option value={p} key={i}>
+                {p}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <PaginateComponent
+          currentPage={pageNumber}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };
