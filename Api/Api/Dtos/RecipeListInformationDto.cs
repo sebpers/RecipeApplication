@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Api.Entities;
 
 namespace Api.Dtos
 {
@@ -15,6 +14,7 @@ namespace Api.Dtos
         public string Author { get; set; } = string.Empty;
         [Required]
         public string UserId { get; set; } = string.Empty;
+        public string? Image { get; set; }
         public UserRecipeFavoriteDto? FavoritedBy { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }

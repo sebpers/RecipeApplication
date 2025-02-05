@@ -20,6 +20,7 @@ namespace Api.Mapper
                 CreatedAt = recipeModel.CreatedAt,
                 UpdatedAt = recipeModel.UpdatedAt,
                 UserId = recipeModel.UserId,
+                Image = ConvertImageToBase64String(recipeModel.Image),
                 Comments = recipeModel?.Comments.Select(c => c.ToCommentDto()).ToList(),
                 FavoritedBy = recipeModel.FavoritedBy.FirstOrDefault(fb => loggedInUserId != null && fb.UserId == loggedInUserId)
             };
@@ -39,6 +40,7 @@ namespace Api.Mapper
                 CreatedAt = recipeModel.CreatedAt,
                 UpdatedAt = recipeModel.UpdatedAt,
                 UserId = recipeModel.UserId,
+                Image = ConvertImageToBase64String(recipeModel.Image),
                 Comments = recipeModel?.Comments.Select(c => c.ToCommentDto()).ToList()
             };
         }
@@ -53,11 +55,10 @@ namespace Api.Mapper
                 Description = userRecipeFavorite.Recipe.Description,
                 Author = userRecipeFavorite.Recipe.Author,
                 CreatedAt = userRecipeFavorite.Recipe.CreatedAt,
+                Image = ConvertImageToBase64String(userRecipeFavorite.Recipe.Image),
                 FavoritedBy = userRecipeFavorite.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite()
             };
         }
-
-
 
         // For logged in users
         public static RecipeListInformationDto? ToRecipeListInformationDto(this Recipe recipeModel, string loggedInUser)
@@ -68,6 +69,7 @@ namespace Api.Mapper
                 Title = recipeModel.Title,
                 Author = recipeModel.Author,
                 UserId = recipeModel.UserId,
+                Image = ConvertImageToBase64String(recipeModel.Image),
                 CreatedAt = recipeModel.CreatedAt,
                 UpdatedAt = recipeModel.UpdatedAt,
                 FavoritedBy = recipeModel.FavoritedBy?.FirstOrDefault(fb => fb.UserId == loggedInUser && fb.RecipeId == recipeModel.Id)
@@ -84,6 +86,7 @@ namespace Api.Mapper
                 Title = recipeModel.Title,
                 Author = recipeModel.Author,
                 UserId = recipeModel.UserId,
+                Image = ConvertImageToBase64String(recipeModel.Image),
                 CreatedAt = recipeModel.CreatedAt,
                 UpdatedAt = recipeModel.UpdatedAt
             };
@@ -110,6 +113,11 @@ namespace Api.Mapper
                 Ingredients = recipeRequest.Ingredients,
                 Instructions = recipeRequest.Instructions
             };
+        }
+
+        private static string? ConvertImageToBase64String(Byte[]? image)
+        {
+            return image != null ? Convert.ToBase64String(image) : string.Empty;
         }
     }
 }

@@ -27,7 +27,6 @@ const FavoriteRecipesPage = () => {
   }, [userId]);
 
   const updateFavoriteRecipeList = () => {
-    console.log("called");
     fetchFavoriteRecipes(userId);
   };
 

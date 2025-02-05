@@ -9,5 +9,6 @@ type RecipeListInformation = {
     recipeId: number;
     userId: string;
   };
+  image?: string;
 };
 export default RecipeListInformation;

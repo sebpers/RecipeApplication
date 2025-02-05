@@ -2,7 +2,6 @@ import { useState } from "react";
 import SubmitButtonComponent from "../components/common/buttons/SubmitButtonComponent";
 import ListInputComponent from "../components//recipes/ListInputComponent";
 import { createRecipe } from "../services/RecipeService";
-import { CreateRecipeProp } from "../interfaces/CreateRecipe";
 import useAuth from "../hooks/auth/useAuth";
 import { useNavigate } from "react-router-dom";
 import Recipe from "../types/Recipe";
@@ -16,6 +15,7 @@ const CreateRecipePage = (props) => {
   const [description, setDescription] = useState<string>("");
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [instructions, setInstructions] = useState<string[]>([]);
+  const [image, setImage] = useState<File | null>(null);
   const [errors, setErrors] = useState<{
     [key: string]: string | boolean | undefined;
   }>({});
@@ -33,6 +33,14 @@ const CreateRecipePage = (props) => {
       checkInputErrors("instructionsRequired");
 
       setInstructions(updatedList);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      setImage(file);
     }
   };
 
@@ -57,37 +65,62 @@ const CreateRecipePage = (props) => {
 
   const onHandleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    e.stopPropagation()
+    e.stopPropagation();
 
     setErrors({});
 
-    const form = {
-      userId: user?.id,
-      title,
-      description,
-      ingredients,
-      instructions,
-    };
+    if (user?.id) {
+      const formData = new FormData();
+      formData.append("userId", user?.id);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
 
-    if (ingredients?.length === 0 || instructions?.length === 0) {
-      setErrors({
-        ingredientsRequired:
-          ingredients?.length === 0 && "Ingrediens are required",
-        instructionsRequired:
-          instructions?.length === 0 && "Instructions are required",
-      });
+      // Send each ingredient as a separate key-value to get "normal" array instead of stringified
+      ingredients.forEach((ingredient) =>
+        formData.append("ingredients", ingredient.trim())
+      );
+      ingredients.forEach((instructions) =>
+        formData.append("instructions", instructions.trim())
+      );
 
-      return;
+      if (image) {
+        formData.append("image", image);
+      }
+
+      if (ingredients?.length === 0 || instructions?.length === 0) {
+        setErrors({
+          ingredientsRequired:
+            ingredients?.length === 0 && "Ingrediens are required",
+          instructionsRequired:
+            instructions?.length === 0 && "Instructions are required",
+        });
+
+        return;
+      }
+
+      addRecipe(formData);
     }
-
-    addRecipe(form);
   };
 
-  const addRecipe = async (form: CreateRecipeProp) => {
-    const createdRecipe: Recipe = await createRecipe(form);
+  const addRecipe = async (form: FormData) => {
+    try {
+      const createdRecipe: Recipe = await createRecipe(form);
 
-    if (!createdRecipe?.errors?.length) {
-      navigate(`/recipes/recipe/${createdRecipe.id}`);
+      if (!createdRecipe?.errors?.length) {
+        navigate(`/recipes/recipe/${createdRecipe.id}`);
+      } else {
+        console.error("Recipe creation errors:", createdRecipe.errors);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error adding recipe:", error.message);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          addingRecipe: error.message,
+        }));
+      } else {
+        console.error("Unknown error occurred:", error);
+      }
     }
   };
 
@@ -136,7 +169,9 @@ const CreateRecipePage = (props) => {
             listItems={ingredients}
             onListChange={handleListChange}
           />
-          {errors?.ingredientsRequired && <p> {errors.ingredientsRequired}</p>}
+          {errors?.ingredientsRequired && (
+            <p className="text-red-600"> {errors.ingredientsRequired}</p>
+          )}
         </div>
 
         <div className="mb-5">
@@ -147,9 +182,25 @@ const CreateRecipePage = (props) => {
             onListChange={handleListChange}
           />
           {errors?.instructionsRequired && (
-            <p> {errors.instructionsRequired}</p>
+            <p className="text-red-600"> {errors.instructionsRequired}</p>
           )}
         </div>
+
+        <div className="mb-5">
+          <input
+            type="file"
+            className="rounded"
+            name="image"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+        </div>
+
+        {errors?.addingRecipe && (
+          <p className="text-red-600">
+            Could not create recipe: {errors.addingRecipe}
+          </p>
+        )}
 
         <div className="flex justify-between">
           <SecondaryButtonComponent onClickFunc={onCancel} />

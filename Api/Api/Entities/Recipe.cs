@@ -8,6 +8,7 @@
         public List<string> Instructions { get; set; } = new List<string>();
         public List<string> Ingredients { get; set; } = new List<string>();
         public string Author { get; set; } = string.Empty;
+        public byte[]? Image { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; }
 

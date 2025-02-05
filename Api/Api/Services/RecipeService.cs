@@ -1,7 +1,9 @@
-﻿using Api.Dtos;
+using Api.Dtos;
 using Api.Dtos.Pagination;
 using Api.Dtos.Recipe;
 using Api.Entities;
+using Api.Helpers;
+using Api.Interfaces.Helpers;
 using Api.Interfaces.Repository;
 using Api.Interfaces.Service;
 using Api.Mapper;
@@ -9,6 +11,7 @@ using Api.Requests.Query;
 using Api.Requests.Recipe;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
 using System.Security.Claims;
 
 namespace Api.Services
@@ -17,11 +20,13 @@ namespace Api.Services
     {
         private readonly IRecipeRepository _recipeRepo;
         private readonly UserManager<User> _userManager;
+        private readonly IImageProcessorHelper _imageProcessor;
 
-        public RecipeService(IRecipeRepository recipeRepository, UserManager<User> userManager)
+        public RecipeService(IRecipeRepository recipeRepository, UserManager<User> userManager, IImageProcessorHelper imageProcessor)
         {
             _recipeRepo = recipeRepository;
             _userManager = userManager;
+            _imageProcessor = imageProcessor;
         }
 
         public async Task<List<RecipeDto>> GetAllAsync()
@@ -133,7 +138,7 @@ namespace Api.Services
             return updatedRecipe.ToRecipeDto();
         }
 
-        public async Task<RecipeDto> CreateAsync(CreateRecipeRequest request)
+        public async Task<RecipeDto> CreateAsync(CreateRecipeRequest request, IFormFile? image)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
 
@@ -148,7 +153,13 @@ namespace Api.Services
 
             Recipe recipeModel = request.ToRecipeFromCreateRequest();
 
+            if (image != null)
+            {
+                recipeModel.Image = await _imageProcessor.ProcessImageAsync(image);
+            }
+
             recipeModel.Author = $"{user.FirstName} {user.LastName}";
+
 
             Recipe recipe = await _recipeRepo.CreateAsync(recipeModel);
 

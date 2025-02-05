@@ -10,6 +10,7 @@ type Recipe = {
     recipeId: number;
     userId: string;
   };
+  image?: string;
 };
 
 export default Recipe;

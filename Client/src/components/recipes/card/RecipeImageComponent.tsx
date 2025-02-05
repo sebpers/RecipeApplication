@@ -9,7 +9,8 @@ import ConfirmModelEditComponent from "../../common/modal/ConfirmModalEditCompon
 import UpdateRecipeFormComponent from "../../forms/recipe/UpdateRecipeFormComponent";
 
 interface RecipeImageComponentProps {
-  recipe: Recipe | null;
+  recipe?: Recipe | null;
+  image?: string;
   updateList?: () => void;
   updateRecipe?: (id: number) => void;
   displayMenu: string;
@@ -24,7 +25,14 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
 
   const { user } = useAuth();
-  const { recipe, updateRecipe, updateList, displayMenu } = props;
+  const { recipe, image, updateRecipe, updateList, displayMenu } = props;
+  const fallbackImg =
+    "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/ras/Assets/c3235163-5697-4911-84e9-633c78c9a35b/Derivates/c15df8ba-50ba-4d77-8292-bac5014b9cb0.jpg";
+
+  const img =
+    image || recipe?.image
+      ? `data:image/jpeg;base64,${image || recipe?.image}`
+      : fallbackImg;
 
   const handleMenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,7 +82,6 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
   const handleDelete = async () => {
     if (recipe?.id) {
       const res = await deleteRecipe(recipe?.id);
-
       if (res?.deleted && updateList) {
         updateList();
       }
@@ -97,11 +104,13 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
 
   return (
     <div className="relative">
-      <img
-        src="https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/ras/Assets/c3235163-5697-4911-84e9-633c78c9a35b/Derivates/c15df8ba-50ba-4d77-8292-bac5014b9cb0.jpg"
-        alt="Recipe Image"
-        className="w-full h-auto rounded-xl"
-      />
+      <div className="">
+        <img
+          src={img}
+          alt="Recipe Image"
+          className="w-full h-auto rounded-xl"
+        />
+      </div>
 
       {/* Button to trigger dropdown - only display menu when recipe is clicked */}
       {isRecipeAuthor && displayMenu && (

@@ -1,4 +1,5 @@
-﻿using Api.Dtos;
+﻿using System.Text.Json;
+using Api.Dtos;
 using Api.Dtos.Pagination;
 using Api.Dtos.Recipe;
 using Api.Interfaces.Helpers;
@@ -185,7 +186,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateRecipeRequest request)
+        public async Task<IActionResult> Create([FromForm] CreateRecipeRequest request, IFormFile? image)
         {
             try
             {
@@ -201,7 +202,16 @@ namespace Api.Controllers
                     return BadRequest(ModelState);
                 }
 
-                RecipeDto recipeDto = await _recipeService.CreateAsync(request);
+                RecipeDto recipeDto;
+
+                try
+                {
+                    recipeDto = await _recipeService.CreateAsync(request, image);
+                }
+                catch (ArgumentException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
                 return Ok(recipeDto);
             }

@@ -45,6 +45,7 @@ const ConfirmDeleteModalComponent = (props: ConfirmModalProp) => {
                     className="size-6 text-red-600"
                   />
                 </div>
+
                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <DialogTitle
                     as="h3"
@@ -52,6 +53,7 @@ const ConfirmDeleteModalComponent = (props: ConfirmModalProp) => {
                   >
                     {defaultTitle ? defaultTitle : title}
                   </DialogTitle>
+
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
                       Your{" "}
@@ -62,6 +64,7 @@ const ConfirmDeleteModalComponent = (props: ConfirmModalProp) => {
                 </div>
               </div>
             </div>
+
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
                 type="button"
@@ -70,6 +73,7 @@ const ConfirmDeleteModalComponent = (props: ConfirmModalProp) => {
               >
                 {btn2Text ? btn2Text : defaultBtn2Text}
               </button>
+
               <button
                 type="button"
                 data-autofocus

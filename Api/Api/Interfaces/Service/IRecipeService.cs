@@ -13,7 +13,7 @@ namespace Api.Interfaces.Service
         Task<RecipeDto?> GetByIdAsync(int id, string userId);
         Task<List<RecipeDto?>?> GetRecipesByUserId(string id);
         Task<RecipeDto?> UpdateAsync(UpdateRecipeRequest request, int id);
-        Task<RecipeDto> CreateAsync(CreateRecipeRequest request);
+        Task<RecipeDto> CreateAsync(CreateRecipeRequest request, IFormFile? image);
         Task<RecipeDto?> DeleteAsync(int id, ClaimsPrincipal currentUser);
         Task<PaginatedResponseDto<RecipeListInformationDto>> GetRecipeListInformationByPagination(string loggedInUserId, QueryParamRequest queryParams);
     }

@@ -11,12 +11,13 @@ interface RecipeProps {
 }
 
 const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
-  const { id, title, author, userId, favoritedBy } = recipe;
+  const { id, title, author, userId, favoritedBy, image } = recipe;
 
   return (
     <RecipeCardComponent recipeId={id} classes={classes}>
       <RecipeImageComponent
         recipeId={id}
+        image={image}
         updateList={updateList}
         displayRecipeMenu={false} // Only display menu when recipe is clicked
       />
