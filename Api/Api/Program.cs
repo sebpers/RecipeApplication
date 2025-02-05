@@ -50,6 +50,7 @@ builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // Helpers
 builder.Services.AddScoped<IClaimsHelper, ClaimsHelper>();
+builder.Services.AddScoped<IImageProcessorHelper, ImageProcessor>();
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>
