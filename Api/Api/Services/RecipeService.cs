@@ -1,4 +1,4 @@
-using Api.Dtos;
+﻿using Api.Dtos;
 using Api.Dtos.Pagination;
 using Api.Dtos.Recipe;
 using Api.Entities;
@@ -160,6 +160,21 @@ namespace Api.Services
 
             recipeModel.Author = $"{user.FirstName} {user.LastName}";
 
+            recipeModel.Title = string.IsNullOrEmpty(recipeModel.Title)
+                ? recipeModel.Title
+                : Transform.FirstCharToUpper(recipeModel.Title);
+
+            recipeModel.Description = string.IsNullOrEmpty(recipeModel.Description)
+                ? recipeModel.Description
+                : Transform.FirstCharToUpper(recipeModel.Description);
+
+            recipeModel.Ingredients = recipeModel.Ingredients
+            .Select(ingredient => ingredient != null ? Transform.FirstCharToUpper(ingredient) : "")
+            .ToList();
+
+            recipeModel.Instructions = recipeModel.Instructions
+                .Select(instruction => instruction != null ? Transform.FirstCharToUpper(instruction) : "")
+                .ToList();
 
             Recipe recipe = await _recipeRepo.CreateAsync(recipeModel);
 

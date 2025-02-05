@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getById } from "../../services/RecipeService.ts";
 import Recipe from "../../types/Recipe.tsx";
@@ -12,6 +12,7 @@ import CardTitleComponent from "../common/card/CardTitleComponent.tsx";
 const RecipeView = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const fetchRecipeListInformation = async () => {
     try {
@@ -39,11 +40,16 @@ const RecipeView = () => {
     }
   };
 
+  const navigateBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="border shadow-lg my-6 m:w-2/4 h-auto pb-2 mx-auto rounded-xl">
       <RecipeImageComponent
         recipe={recipe}
         updateRecipe={updateRecipe}
+        updateList={navigateBack}
         displayMenu="true"
       />
 

@@ -58,10 +58,6 @@ const MyPage = () => {
     setShowCreateRecipeForm(false);
   };
 
-  const updateRecipeListAfterDelete = async () => {
-    await fetchRecipes();
-  };
-
   const onCancelEditDescription = () => {
     setDescription(originalDescription); // Reset to original value
     setShowDescriptionDialog(false);
@@ -190,12 +186,7 @@ const MyPage = () => {
                   <div className="flex flex-wrap justify-center md:space-x-10">
                     {recipes?.length ? (
                       recipes?.map((r) => (
-                        <Recipe
-                          recipe={r}
-                          key={r.id}
-                          classes={"!w-48"}
-                          updateList={updateRecipeListAfterDelete}
-                        />
+                        <Recipe recipe={r} key={r.id} classes={"!w-48"} />
                       ))
                     ) : (
                       <p className="mt-5 italic">No recipes created yet...</p>

@@ -15,6 +15,6 @@ namespace Api.Requests.Recipe
         [MinLength(1, ErrorMessage = "Instructions cannot be empty.")]
         public List<string> Instructions { get; set; } = new List<string>();
         [Required]
-        public string? UserId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
     }
 }
