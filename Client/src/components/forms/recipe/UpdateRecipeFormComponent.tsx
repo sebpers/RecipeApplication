@@ -147,7 +147,7 @@ const UpdateRecipeFormComponent = (props: UpdateRecipeFormComponentProp) => {
         {errors?.instructionsRequired && <p> {errors.instructionsRequired}</p>}
       </div>
 
-      <div className="flex justify-between bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+      <div className="flex justify-between px-4 py-5 sm:flex sm:flex-row-reverse sm:px-6">
         <SubmitButtonComponent text="Update" />
         <SecondaryButtonComponent onClickFunc={() => onConfirm(false)} />
       </div>

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import LayoutPage from "./pages/LayoutPage";
 import RecipesList from "./components/recipes/RecipesList";
 import HomePage from "./pages/HomePage";
@@ -7,7 +7,6 @@ import AuthPage from "./pages/AuthPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import AccountPage from "./pages/AccountPage";
 import MyPage from "./pages/MyPage";
-import AuthProvider from "./context/auth/AuthProvider";
 import CreateRecipePage from "./pages/CreateRecipePage";
 import AuthorListPage from "./pages/AuthorListPage";
 import { getMe, validateUserToken } from "./services/AuthService";
@@ -41,50 +40,43 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<LayoutPage />}>
-            <Route index element={<HomePage />} />
-            <Route path="recipes" element={<RecipesList />} />
-            <Route path="recipes/recipe/:id" element={<RecipeView />} />
-            <Route path="login" element={<AuthPage />} />
-            <Route path="register" element={<AuthPage />} />
+    <Routes>
+      <Route path="/" element={<LayoutPage />}>
+        <Route index element={<HomePage />} />
+        <Route path="login" element={<AuthPage />} />
+        <Route path="register" element={<AuthPage />} />
+        <Route path="recipes" element={<RecipesList />} />
+        <Route path="recipes/recipe/:id" element={<RecipeView />} />
+        <Route path="author/:id" element={<AccountPage />} />
+        <Route path="authors" element={<AuthorListPage />} />
 
-            {/* Protected routes */}
+        {/* Protected routes */}
+        <Route
+          path="my"
+          element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
+        >
+          <Route index element={<MyPage />} />
+          <Route path="create-recipe" element={<CreateRecipePage />} />
+          <Route path="favorite-recipes" element={<FavoriteRecipesPage />} />
+        </Route>
+
+        {/* Protected routes */}
+        <Route
+          path="dashboard"
+          element={<ProtectedRoute isAuthenticated={isAdmin} />}
+        >
+          <Route element={<DashboardPage />}>
+            <Route path="users" index element={<DashboardUsers />} />
             <Route
-              path="my"
-              element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
-            >
-              <Route index element={<MyPage />} />
-              <Route path="create-recipe" element={<CreateRecipePage />} />
-              <Route
-                path="favorite-recipes"
-                element={<FavoriteRecipesPage />}
-              />
-            </Route>
-
-            {/* Protected routes */}
-            <Route
-              path="dashboard"
-              element={<ProtectedRoute isAuthenticated={isAdmin} />}
-            >
-              <Route element={<DashboardPage />}>
-                <Route path="users" index element={<DashboardUsers />} />
-                <Route
-                  path="statistics/users"
-                  element={<DashboardStatisticUsersPage />}
-                />
-              </Route>
-            </Route>
-
-            <Route path="author/:id" element={<AccountPage />} />
-            <Route path="authors" element={<AuthorListPage />} />
-            <Route path="*" element={<NotFoundPage />} />
+              path="statistics/users"
+              element={<DashboardStatisticUsersPage />}
+            />
           </Route>
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
+    </Routes>
   );
 }
 

@@ -46,7 +46,9 @@ export const getMe = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       throw (
-        error.response?.data?.errors || error.response?.data || error.message
+        error.response?.data?.errors ||
+        error.response?.data ||
+        error.response?.data.message
       );
     }
 
@@ -73,12 +75,6 @@ export const validateUserToken = async () => {
         if (!displayedMessages.has(message)) {
           toast.error(message);
           displayedMessages.add(message);
-
-          if (message === "Invalid or expired token") {
-            logoutUser();
-            toast.error(message);
-            displayedMessages.add("Time expired, login again to continue");
-          }
 
           setTimeout(() => {
             displayedMessages.clear(); // Clears the set messages

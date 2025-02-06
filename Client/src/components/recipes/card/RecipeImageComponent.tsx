@@ -131,6 +131,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           </svg>
         </button>
       )}
+
       {isRecipeAuthor && isDropdownOpen && (
         <div className="absolute top-10 right-2" onClick={handleMenuClick}>
           <CardMenuComponent
@@ -139,6 +140,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           />
         </div>
       )}
+
       {showEditModal && recipe && (
         <ConfirmModelEditComponent title={`${recipe.title}`}>
           <UpdateRecipeFormComponent
@@ -147,6 +149,7 @@ const RecipeImageComponent = (props: RecipeImageComponentProps) => {
           />
         </ConfirmModelEditComponent>
       )}
+
       {showDeleteModal && recipe && (
         <ConfirmDeleteModalComponent
           onConfirm={onConfirmDelete}

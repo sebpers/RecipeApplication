@@ -19,12 +19,18 @@ const AuthProvider = ({ children }: Props) => {
   // Check for token validity when the app loads
   useEffect(() => {
     const validateToken = async () => {
-      const response = await validateUserToken();
-
-      if (response.status === 200) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
+      try {
+        const response = await validateUserToken();
+        if (response.status === 200) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error: unknown) {
+        if (error.message === "Invalid or expired token") {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
       }
     };
 
@@ -40,6 +46,7 @@ const AuthProvider = ({ children }: Props) => {
           setUser(response.data);
         }
       } else {
+        setIsAuthenticated(false);
         setUser(null);
       }
     };
@@ -50,6 +57,7 @@ const AuthProvider = ({ children }: Props) => {
   const logout = () => {
     setIsAuthenticated(false);
     logoutUser();
+    setUser(null);
   };
 
   const contextValue: AuthContextType = {
