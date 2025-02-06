@@ -127,10 +127,14 @@ namespace Api.Services
                 return null;
             }
 
-            recipeModel.Title = request.Title;
-            recipeModel.Description = request.Description;
-            recipeModel.Ingredients = request.Ingredients;
-            recipeModel.Instructions = request.Instructions;
+            recipeModel.Title = Transform.FirstCharToUpper(request.Title);
+            recipeModel.Description = Transform.FirstCharToUpper(request.Description);
+            recipeModel.Ingredients = request.Ingredients
+                .Select(ingredient => ingredient != null ? Transform.FirstCharToUpper(ingredient) : "")
+            .ToList(); ;
+            recipeModel.Instructions = request.Instructions
+                .Select(instructions => instructions != null ? Transform.FirstCharToUpper(instructions) : "")
+            .ToList(); ;
             recipeModel.UpdatedAt = DateTime.Now;
 
             Recipe updatedRecipe = await _recipeRepo.UpdateAsync(recipeModel);
