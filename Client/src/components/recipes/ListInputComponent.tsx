@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "./recipes.css";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 interface ListInputComponentProps {
   labelName: string;
@@ -70,6 +72,23 @@ const ListInputComponent = (props: ListInputComponentProps) => {
     }
   };
 
+  const handleItemOrder = (index: number, direction: number) => {
+    const newList = [...listItems];
+    const newIndex = index + direction;
+
+    // Ensure the new index is within bounds
+    if (newIndex >= 0 && newIndex < listItems.length) {
+      // Save the item to swap with
+      const temp = newList[index];
+
+      // Swap positions for the items
+      newList[index] = newList[newIndex];
+      newList[newIndex] = temp;
+
+      onListChange(fieldName, newList);
+    }
+  };
+
   return (
     <div className="mb-5">
       <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -110,25 +129,45 @@ const ListInputComponent = (props: ListInputComponentProps) => {
       {listItems.length > 0 && (
         <ul className="list-disc mt-2 p-5 shadow-lg border border-2">
           {listItems.map((item, index) => (
-            <li key={index} className="flex justify-between items-center">
-              <span>{item}</span>
-              <div className="flex space-x-2">
-                <button
-                  type="button"
-                  onClick={() => handleEdit(index)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
+            <>
+              <li
+                key={index}
+                className="p-2 bg-bad flex justify-between items-center list-item-arrow"
+              >
+                <span>{item}</span>
+
+                <span className="space-x-2 flex arrows hidden">
+                  <IoIosArrowUp
+                    onClick={() => handleItemOrder(index, -1)}
+                    className="cursor-pointer"
+                    title="Move up"
+                  />
+                  <IoIosArrowDown
+                    onClick={() => handleItemOrder(index, 1)}
+                    className="cursor-pointer"
+                    title="Move down"
+                  />
+                </span>
+
+                <div className="flex space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => handleEdit(index)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+              <hr />
+            </>
           ))}
         </ul>
       )}

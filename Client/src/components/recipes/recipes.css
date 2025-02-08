@@ -1,0 +1,7 @@
+.list-item-arrow:hover .arrows {
+  display: flex;
+}
+
+.arrows {
+  display: none;
+}
