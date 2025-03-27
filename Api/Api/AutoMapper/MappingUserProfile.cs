@@ -19,8 +19,15 @@ namespace Api.AutoMapper
 
             // Map user to AuthorDto...
             CreateMap<User, AuthorDto>();
-            CreateMap<User, AuthorLimitedListInfoDto>();
-            
+            //CreateMap<User, AuthorLimitedListInfoDto>();
+            CreateMap<User, AuthorLimitedListInfoDto>()
+                .ForMember(dest => dest.FavoritedBy, opt => opt.MapFrom(src => src.FavoritedBy));
+
+            CreateMap<UserAuthorFavorite, UserAuthorFavoriteDto>();
+            // Map only to IDs
+            CreateMap<UserAuthorFavorite, UserAuthorFavoriteDto>()
+                .ForMember(uaf => uaf.UserAuthorFavoriteId, option => option.MapFrom(src => src.Id));
+
         }
     }
 }

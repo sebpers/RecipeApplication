@@ -37,11 +37,12 @@ namespace Api.Services
             return authors;
         }
 
-        public async Task<List<AuthorLimitedListInfoDto>> GetAllLimitedInfoAsync()
+        public async Task<List<AuthorLimitedListInfoDto>> GetAllLimitedInfoAsync(string? currentUserId)
         {
-            List<User> users = await _userManager.Users.ToListAsync();
+            List<User> users = await _userManager.Users
+                .Include(u => u.FavoritedBy)
+                .ToListAsync();
 
-            // Get all users as "Author"
             var authors = new List<AuthorLimitedListInfoDto>();
 
             foreach (var user in users)
@@ -49,6 +50,12 @@ namespace Api.Services
                 if (await IsAuthorAsync(user))
                 {
                     AuthorLimitedListInfoDto author = _mapper.Map<AuthorLimitedListInfoDto>(user);
+
+                    if (currentUserId != null)
+                    {
+                        author.IsFavorited = author.FavoritedBy?.Any(f => f.UserId == currentUserId) ?? false;
+                    }
+
                     authors.Add(author);
                 }
             }

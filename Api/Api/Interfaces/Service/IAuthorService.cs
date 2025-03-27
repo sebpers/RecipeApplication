@@ -5,6 +5,6 @@ namespace Api.Interfaces.Service
     public interface IAuthorService
     {
         public Task<List<AuthorDto>> GetAllAsync();
-        public Task<List<AuthorLimitedListInfoDto>> GetAllLimitedInfoAsync();
+        public Task<List<AuthorLimitedListInfoDto>> GetAllLimitedInfoAsync(string? currentUserId);
     }
 }

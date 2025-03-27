@@ -6,6 +6,7 @@ import profile1 from "../../../assets/profile1.png";
 
 interface AuthorCardImageComponentProps {
   authorId?: string;
+  authorName: string;
 }
 
 const AuthorCardImageComponent = (props: AuthorCardImageComponentProps) => {
@@ -30,6 +31,7 @@ const AuthorCardImageComponent = (props: AuthorCardImageComponentProps) => {
   // Attach the event listener to handle clicks outside
   useEffect(() => {
     document.addEventListener("click", handleOutsideClick);
+
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
@@ -37,6 +39,7 @@ const AuthorCardImageComponent = (props: AuthorCardImageComponentProps) => {
 
   useEffect(() => {
     const result = hasRole(user, ["admin"], props.authorId);
+
     setIsAdmin(result);
   }, [user]);
 
@@ -56,6 +59,7 @@ const AuthorCardImageComponent = (props: AuthorCardImageComponentProps) => {
         src={profile1}
         alt="Image of the recipes author"
         className="w-full h-auto max-w-60"
+        title={`${props.authorName}`}
       />
 
       {isAdmin && (

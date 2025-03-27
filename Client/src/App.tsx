@@ -15,6 +15,7 @@ import FavoriteRecipesPage from "./pages/FavoriteRecipesPage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardUsers from "./pages/DashboardUsers";
 import { DashboardStatisticUsersPage } from "./pages/DashboardStatisticUsersPage";
+import FavoriteAuthorsPage from "./pages/FavoriteAuthorsPage";
 
 function App() {
   const isAuthenticated = async (): Promise<boolean> => {
@@ -39,6 +40,10 @@ function App() {
     );
   };
 
+  const isLoggedIn = async (): Promise<boolean> => {
+    return await isAuthenticated();
+  };
+
   return (
     <Routes>
       <Route path="/" element={<LayoutPage />}>
@@ -53,11 +58,22 @@ function App() {
         {/* Protected routes */}
         <Route
           path="my"
-          element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
+          element={<ProtectedRoute isAuthenticated={isLoggedIn} />}
         >
           <Route index element={<MyPage />} />
-          <Route path="create-recipe" element={<CreateRecipePage />} />
-          <Route path="favorite-recipes" element={<FavoriteRecipesPage />} />
+          {/* Only allow admin or author to enter create-recipe route */}
+          <Route
+            path=""
+            element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
+          >
+            <Route path="create-recipe" element={<CreateRecipePage />} />
+          </Route>
+          {/*END */}
+          <Route
+            path="favorite-recipes"
+            element={<FavoriteRecipesPage />}
+          />{" "}
+          <Route path="favorite-authors" element={<FavoriteAuthorsPage />} />{" "}
         </Route>
 
         {/* Protected routes */}
@@ -73,7 +89,6 @@ function App() {
             />
           </Route>
         </Route>
-
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
