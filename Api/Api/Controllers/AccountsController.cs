@@ -119,7 +119,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("me")]
-        public IActionResult GetLoggedInUser()
+        public async Task<IActionResult> GetLoggedInUser()
         {
             var token = Request.Cookies["authToken"];
 
@@ -138,7 +138,15 @@ namespace Api.Controllers
             var id = claimsPrincipal.FindFirst("id")?.Value;
             var firstName = claimsPrincipal.FindFirst("firstName")?.Value;
             var lastName = claimsPrincipal.FindFirst("lastName")?.Value;
-            var description = claimsPrincipal.FindFirst("description")?.Value;
+
+            var userModel = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+
+            string? description = userModel.Description;
 
             var user = new
             {
