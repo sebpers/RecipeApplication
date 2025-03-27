@@ -8,6 +8,7 @@ import RadioButtons from "../components/common/RadioButtonsComponent";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 import { toast } from "react-toastify";
+import { RegisterUserResult } from "../interfaces/user/registerUser";
 
 interface RegisterPage {
   firstName: string;
@@ -62,7 +63,7 @@ const RegisterPage = () => {
     };
 
     try {
-      const response = await register(account);
+      const response: RegisterUserResult = await register(account);
 
       if (response.isAuthSuccessful) {
         navigate("/");
@@ -83,7 +84,7 @@ const RegisterPage = () => {
   return (
     <>
       <AuthCardComponent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="p-4">
           <div className="flex flex-col mb-6">
             <input
               className="p-4 rounded rounded border border-2"

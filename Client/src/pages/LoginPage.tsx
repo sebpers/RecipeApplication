@@ -43,7 +43,7 @@ const LoginPage = () => {
   return (
     <>
       <AuthCardComponent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="p-4">
           <div className="flex flex-col mb-6 rounded border border-2">
             <input
               className="p-4 rounded"

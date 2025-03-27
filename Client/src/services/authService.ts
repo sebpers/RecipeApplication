@@ -3,6 +3,7 @@ import Login from "../types/Login";
 import Register from "../pages/RegisterPage";
 import { Me } from "../interfaces/Me";
 import { toast } from "react-toastify";
+import { RegisterUserResult } from "../interfaces/user/registerUser";
 
 const API_PREFIX = "http://localhost:5098/api/accounts";
 const displayedMessages = new Set<string>(); // Only store message once
@@ -22,7 +23,9 @@ export const login = async (account: Login) => {
   return token;
 };
 
-export const register = async (account: Register) => {
+export const register = async (
+  account: Register
+): Promise<RegisterUserResult> => {
   try {
     const response = await axios.post(`${API_PREFIX}/register`, account, {
       withCredentials: true,

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const HomePage = () => {
   return (
     <div className="flex flex-col container">
@@ -10,8 +12,30 @@ const HomePage = () => {
             delicious recipes for every craving. Explore step-by-step guides,
             discover new flavors, and save your favorites—all in one place.
             Cooking has never been easier or more fun! Get inspired, experiment
-            with ingredients, and create amazing meals. Ready to cook? Let’s get
-            started! 👨‍🍳🔥
+            with ingredients, and create amazing meals. Ready to join the
+            family?
+            <div className="mt-4 space-x-2">
+              <button
+                className="btn btn-green"
+                title="Naviagte to list of recipes"
+              >
+                <Link to="/register">Let’s get started! 👨‍🍳🔥</Link>
+              </button>
+
+              <button
+                className="btn btn-blue"
+                title="Naviagte to list of recipes"
+              >
+                <Link to="/recipes">Recipes</Link>
+              </button>
+
+              <button
+                className="rounded btn bg-purple-700"
+                title="Naviagte to list of recipes"
+              >
+                <Link to="/authors">Chefs</Link>
+              </button>
+            </div>
           </section>
 
           <section className="shadow-xl p-5 mb-5 border border-1 lg:w-2/4 w-full">
