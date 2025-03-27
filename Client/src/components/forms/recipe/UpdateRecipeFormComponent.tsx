@@ -82,7 +82,7 @@ const UpdateRecipeFormComponent = (props: UpdateRecipeFormComponentProp) => {
       return;
     }
 
-    const updatedRecipe = await updateRecipe(recipe.id, form);
+    const updatedRecipe: Recipe = await updateRecipe(recipe.id, form);
 
     if (updatedRecipe) {
       onConfirm(true);

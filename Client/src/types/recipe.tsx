@@ -6,10 +6,6 @@ type Recipe = {
   instructions: string[];
   author: string;
   userId: string;
-  favoritedBy: {
-    recipeId: number;
-    userId: string;
-  };
   image?: string;
 };
 

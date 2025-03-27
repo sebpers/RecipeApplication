@@ -62,11 +62,7 @@ const RecipeView = () => {
         />
 
         <div className="p-3">
-          <CardTitleComponent
-            title={recipe?.title}
-            recipeId={recipe?.id}
-            favoritedBy={recipe?.favoritedBy}
-          />
+          <CardTitleComponent title={recipe?.title} recipeId={recipe?.id} />
 
           <RecipeCardDescription description={recipe?.description} />
 

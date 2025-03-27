@@ -11,7 +11,7 @@ interface RecipeProps {
 }
 
 const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
-  const { id, title, author, userId, favoritedBy, image } = recipe;
+  const { id, title, author, userId, image, isFavorited } = recipe;
 
   return (
     <RecipeCardComponent recipeId={id} classes={classes}>
@@ -23,9 +23,8 @@ const Recipe = ({ recipe, updateList, classes }: RecipeProps) => {
       />
       <CardTitleComponent
         title={title}
-        favoritedBy={favoritedBy}
         recipeId={recipe.id}
-        updateList={updateList}
+        isFavorited={isFavorited}
       />
       <RecipeCardAuthorBadgeComponent userId={userId} author={author} />
     </RecipeCardComponent>

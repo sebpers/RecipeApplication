@@ -20,6 +20,7 @@ namespace Api.Dtos.Recipe
         [Required]
         public string UserId { get; set; } = string.Empty;
         public UserRecipeFavorite? FavoritedBy { get; set; }
+        public bool IsFavorited { get; set; }
         public string? Image { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }

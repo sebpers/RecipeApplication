@@ -5,7 +5,7 @@ import { UpdateRecipeProp } from "../interfaces/updateRecipe.ts";
 
 const API_PREFIX = "http://localhost:5098/api/recipes";
 
-export const getMyRecipes = async (userId: string) => {
+export const getMyRecipes = async (userId: string): Promise<Recipe[]> => {
   try {
     const res = await axios.get(`${API_PREFIX}/my-recipes/${userId}`, {
       withCredentials: true, // Ensures cookies are included in the request

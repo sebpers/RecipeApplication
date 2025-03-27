@@ -5,10 +5,7 @@ type RecipeListInformation = {
   createdAt: Date;
   updatedAt?: Date;
   userId: string;
-  favoritedBy: {
-    recipeId: number;
-    userId: string;
-  };
+  isFavorited: boolean;
   image?: string;
 };
 export default RecipeListInformation;

@@ -15,7 +15,10 @@ export const getFavoriteRecipes = async (userId: string) => {
   }
 };
 
-export const addFavoriteRecipe = async (recipeId: number, userId: string) => {
+export const addRecipeToFavorites = async (
+  recipeId: number,
+  userId: string
+) => {
   const addedFavoriteRecipe: Recipe = await axios
     .post(`${API_PREFIX}/${recipeId}`, userId, {
       headers: {

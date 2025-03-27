@@ -14,5 +14,8 @@ namespace Api.Entities
 
         public List<Recipe>? Recipes { get; set; } = new List<Recipe>();
         public List<UserRecipeFavorite>? FavoriteRecipes { get; set; } = new List<UserRecipeFavorite>();
+
+        public List<UserAuthorFavorite>? FavoriteAuthors { get; set; } = new List<UserAuthorFavorite>();
+        public List<UserAuthorFavorite>? FavoritedBy { get; set; } = new List<UserAuthorFavorite>();
     }
 }

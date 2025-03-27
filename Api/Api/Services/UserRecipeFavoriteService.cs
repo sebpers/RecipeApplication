@@ -29,7 +29,7 @@ namespace Api.Services
             }
 
             List<RecipeListInformationDto> recipeListInformationDto = favoriteRecipesList
-                .Select(fr => fr.ToRecipeListInformationDtoFromUserRecipeFavorite())
+                .Select(fr => fr.ToRecipeListInformationDtoFromUserRecipeFavorite(userId))
                 .ToList();
 
             return recipeListInformationDto;

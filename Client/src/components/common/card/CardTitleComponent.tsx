@@ -1,71 +1,63 @@
 import { FaHeart } from "react-icons/fa";
 import useAuth from "../../../hooks/auth/useAuth";
-import { addFavoriteRecipe } from "../../../services/favoriteRecipeService";
+import { addRecipeToFavorites } from "../../../services/favoriteRecipeService";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { addAuthorToFavorites } from "../../../services/favoriteAuthorService";
+import Recipe from "../../../types/Recipe";
 
 type PropTitle = {
   title: string | undefined;
   h1Class?: string;
   recipeId?: number;
-  favoritedBy?: {
-    recipeId: number;
-    userId: string;
-  };
-  updateList?: () => void;
+  authorId?: string;
+  isFavorited?: boolean;
 };
 
 const CardTitleComponent = (props: PropTitle) => {
   const { user, isAuthenticated } = useAuth();
-  const { title, h1Class, recipeId, favoritedBy, updateList } = props;
-  const [favored, setFavored] = useState("text-grey-600");
+  const { title, h1Class, recipeId, authorId, isFavorited } = props;
 
-  useEffect(() => {
-    if (user?.id && favoritedBy) {
-      // If the user has favorited this recipe, update the color
-      if (
-        user.id === favoritedBy?.userId &&
-        recipeId === favoritedBy?.recipeId
-      ) {
-        setFavored("text-red-500");
-      } else {
-        setFavored("text-grey-600");
-      }
+  const [favored, setFavored] = useState<boolean | undefined>(isFavorited);
+
+  useEffect(() => {}, [recipeId, isFavorited]);
+
+  const isFavoredItem = (isFavored: boolean | Recipe): void => {
+    if (isFavored) {
+      setFavored(true);
+    } else {
+      setFavored(false);
     }
-  }, [user, favoritedBy, recipeId]);
+  };
 
   const handleAddToFavorites = async (e: React.MouseEvent<SVGElement>) => {
     e.preventDefault(); // Prevent navigating to recipe when icon is clicked
 
     try {
       if (recipeId && user?.id) {
-        const isFavored = await addFavoriteRecipe(recipeId, user.id);
-
-        if (isFavored) {
-          setFavored("text-red-500");
-        } else {
-          setFavored("text-grey-600");
-
-          if (updateList !== undefined) {
-            updateList();
-          }
-        }
+        const isFavored = await addRecipeToFavorites(recipeId, user.id);
+        isFavoredItem(isFavored);
+      } else if (authorId && user?.id) {
+        const isFavored = await addAuthorToFavorites(authorId, user.id);
+        isFavoredItem(isFavored);
       }
     } catch (error) {
-      toast.error("Error, could not save recipe");
-      console.error("ERROR: ", error);
+      toast.error("Error, could not save item");
     }
   };
 
   return (
     <h1 className={`flex justify-between p-3 font-semibold ${h1Class}`}>
       {title}
+
       {isAuthenticated && (
         <FaHeart
-          id={`heart-icon ${recipeId}`}
+          id={`heart-icon ${recipeId ? recipeId : authorId}`}
           title={favored ? "Remove from favorites" : "Add to favorites"}
           size="20"
-          className={`text-grey-600 inline-block cursor-pointer ${favored}`}
+          className={`inline-block cursor-pointer ${
+            favored ? "text-red-500" : "text-grey-600"
+          }`}
           onClick={handleAddToFavorites}
         />
       )}

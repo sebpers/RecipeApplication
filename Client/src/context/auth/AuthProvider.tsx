@@ -41,7 +41,7 @@ const AuthProvider = ({ children }: Props) => {
     const fetchUserInfo = async () => {
       if (isAuthenticated) {
         const response = await getMe();
-        console.log("auth response: ", response);
+
         if (response.status === 200) {
           setUser(response.data);
         }

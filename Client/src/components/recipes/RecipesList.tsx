@@ -112,13 +112,13 @@ const RecipesList = () => {
             </label>
           </div>
 
-          <div className="flex flex-wrap justify-center items-start min-w-full max-w-screen-md min-w-80">
+          <div className="flex flex-wrap justify-center items-start min-w-full max-w-screen-md min-w-70">
             {recipes.length > 0 ? (
               recipes.map((recipe) => (
                 <Recipe
                   key={recipe.id}
                   recipe={recipe}
-                  classes="md:ml-5 md:mr-5"
+                  classes="md:ml-5 md:mr-5 !w-60"
                 />
               ))
             ) : (
@@ -130,7 +130,7 @@ const RecipesList = () => {
         <LoadingComponent />
       )}
 
-      <div className="flex justify-center flex-wrap items-center my-4 border-t">
+      <div className="flex justify-center flex-wrap items-center my-4 border-t offset-l-1">
         <label className="text-sm text-gray-700">
           <select
             value={pageSize}

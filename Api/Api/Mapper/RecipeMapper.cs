@@ -9,6 +9,8 @@ namespace Api.Mapper
     {
         public static RecipeDto ToRecipeDto(this Recipe recipeModel, string? loggedInUserId = null)
         {
+            bool isRecipeFavorited = recipeModel.FavoritedBy?.Any(fb => fb.UserId == loggedInUserId && fb.RecipeId == recipeModel.Id) ?? false;
+
             return new RecipeDto
             {
                 Id = recipeModel.Id,
@@ -22,7 +24,8 @@ namespace Api.Mapper
                 UserId = recipeModel.UserId,
                 Image = ConvertImageToBase64String(recipeModel.Image),
                 Comments = recipeModel?.Comments.Select(c => c.ToCommentDto()).ToList(),
-                FavoritedBy = recipeModel.FavoritedBy.FirstOrDefault(fb => loggedInUserId != null && fb.UserId == loggedInUserId)
+                FavoritedBy = recipeModel.FavoritedBy.FirstOrDefault(fb => loggedInUserId != null && fb.UserId == loggedInUserId),
+                IsFavorited = isRecipeFavorited
             };
         }
 
@@ -56,13 +59,35 @@ namespace Api.Mapper
                 Author = userRecipeFavorite.Recipe.Author,
                 CreatedAt = userRecipeFavorite.Recipe.CreatedAt,
                 Image = ConvertImageToBase64String(userRecipeFavorite.Recipe.Image),
-                FavoritedBy = userRecipeFavorite.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite()
+                FavoritedBy = userRecipeFavorite.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite(),
+            };
+        }
+
+        public static RecipeListInformationDto ToRecipeListInformationDtoFromUserRecipeFavorite(this UserRecipeFavorite userRecipeFavorite, string userId)
+        {
+            bool isRecipeFavorited = userRecipeFavorite.Recipe.FavoritedBy?.Any(fb => fb.UserId == userId && fb.RecipeId == userRecipeFavorite.RecipeId) ?? false;
+
+            return new RecipeListInformationDto
+            {
+                Id = userRecipeFavorite.RecipeId,
+                UserId = userRecipeFavorite.UserId,
+                Title = userRecipeFavorite.Recipe.Title,
+                Description = userRecipeFavorite.Recipe.Description,
+                Author = userRecipeFavorite.Recipe.Author,
+                CreatedAt = userRecipeFavorite.Recipe.CreatedAt,
+                Image = ConvertImageToBase64String(userRecipeFavorite.Recipe.Image),
+                FavoritedBy = userRecipeFavorite.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite(),
+                IsFavorited = isRecipeFavorited
             };
         }
 
         // For logged in users
         public static RecipeListInformationDto? ToRecipeListInformationDto(this Recipe recipeModel, string loggedInUser)
         {
+            bool isRecipeFavorited = recipeModel.FavoritedBy?.Any(fb => fb.UserId == loggedInUser && fb.RecipeId == recipeModel.Id) ?? false;
+
+            UserRecipeFavorite? favoritedByUser = recipeModel.FavoritedBy?.FirstOrDefault(fb => fb.UserId == loggedInUser && fb.RecipeId == recipeModel.Id);
+
             return new RecipeListInformationDto
             {
                 Id = recipeModel.Id,
@@ -72,8 +97,8 @@ namespace Api.Mapper
                 Image = ConvertImageToBase64String(recipeModel.Image),
                 CreatedAt = recipeModel.CreatedAt,
                 UpdatedAt = recipeModel.UpdatedAt,
-                FavoritedBy = recipeModel.FavoritedBy?.FirstOrDefault(fb => fb.UserId == loggedInUser && fb.RecipeId == recipeModel.Id)
-                    ?.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite()
+                FavoritedBy = favoritedByUser?.ToUserRecipeFavoriteDtoFromToUserRecipeFavorite(),
+                IsFavorited = isRecipeFavorited
             };
         }
 

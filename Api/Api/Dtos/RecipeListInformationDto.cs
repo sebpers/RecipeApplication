@@ -16,6 +16,7 @@ namespace Api.Dtos
         public string UserId { get; set; } = string.Empty;
         public string? Image { get; set; }
         public UserRecipeFavoriteDto? FavoritedBy { get; set; }
+        public bool IsFavorited { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
