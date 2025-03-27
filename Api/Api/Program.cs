@@ -40,12 +40,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserRecipeFavoriteRepository, UserRecipeFavoriteRepository>();
+builder.Services.AddScoped<IUserAuthorFavoriteRepository, UserAuthorFavoriteRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserRecipeFavoriteService, UserRecipeFavoriteService>();
+builder.Services.AddScoped<IUserFavoriteAuthorService, UserFavoriteAuthorService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 
 // Helpers
