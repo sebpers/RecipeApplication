@@ -1,10 +1,15 @@
-import { Link, NavigateFunction, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavigateFunction, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { VscAccount } from "react-icons/vsc";
 import useAuth from "../hooks/auth/useAuth";
 import { GiNewspaper } from "react-icons/gi";
 import { TbToolsKitchen3 } from "react-icons/tb";
 import { PiChefHatLight } from "react-icons/pi";
+import { LiaBookSolid } from "react-icons/lia";
+import { MdLogout } from "react-icons/md";
+import { LuLayoutDashboard } from "react-icons/lu";
+import DropdownLinkItemComponent from "./DropdownLinkItemComponent";
+import NavbarNavLinkComponent from "./NavbarNavLinkComponent";
 
 const NavbarComponent = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -44,44 +49,17 @@ const NavbarComponent = () => {
   return (
     <nav className="shadow-md flex justify-center h-20 mb-5 bg-slate-100">
       <ul className="md:px-10 h-auto flex space-x-6 justify-center items-center">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `${
-              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
-            } text-lg hover:text-gray-900`
-          }
-        >
-          <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
-            <GiNewspaper size="25" className="mr-1" /> News
-          </li>
-        </NavLink>
-
-        <NavLink
-          to="/recipes"
-          className={({ isActive }) =>
-            `${
-              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
-            } text-lg hover:text-gray-900`
-          }
-        >
-          <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
-            <TbToolsKitchen3 size="25" className="mr-1" /> Recipes
-          </li>
-        </NavLink>
-
-        <NavLink
-          to="/authors"
-          className={({ isActive }) =>
-            `${
-              isActive ? "bg-blue-100 px-2 py-1 rounded-lg" : ""
-            } text-lg hover:text-gray-900`
-          }
-        >
-          <li className="flex items-start text-lg text-gray-600 hover:text-gray-900">
-            <PiChefHatLight size="25" className="mr-1" /> Chefs
-          </li>
-        </NavLink>
+        <NavbarNavLinkComponent path={"/"} icon={GiNewspaper} text={"News"} />
+        <NavbarNavLinkComponent
+          path={"/recipes"}
+          icon={TbToolsKitchen3}
+          text={"Recipes"}
+        />
+        <NavbarNavLinkComponent
+          path={"/authors"}
+          icon={PiChefHatLight}
+          text={"Chefs"}
+        />
 
         {/* User Dropdown shown if Logged In */}
         {isAuthenticated ? (
