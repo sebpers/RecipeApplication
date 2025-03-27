@@ -101,36 +101,42 @@ const NavbarComponent = () => {
                 <ul onClick={toggleDropdown}>
                   {(user?.roles?.includes("Author") ||
                     user?.roles?.includes("Admin")) && (
-                    <Link to="/my">
-                      <li className="px-4 py-2 hover:bg-gray-100">Account</li>
-                    </Link>
+                    <DropdownLinkItemComponent
+                      path={"/my"}
+                      icon={VscAccount}
+                      text={"Account"}
+                    />
                   )}
 
                   {user?.roles?.includes("Admin") && (
-                    <Link to="/dashboard/users">
-                      <li className="px-4 py-2 hover:bg-gray-100">Dashboard</li>
-                    </Link>
+                    <DropdownLinkItemComponent
+                      path={"/dashboard/users"}
+                      icon={LuLayoutDashboard}
+                      text={"Dashboard"}
+                    />
                   )}
 
-                  <Link
-                    to={{
-                      pathname: "my/favorite-recipes",
-                    }}
+                  <DropdownLinkItemComponent
+                    path={"my/favorite-recipes"}
                     state={{ userId: user?.id }}
-                  >
-                    <li className="px-4 py-2 hover:bg-gray-100">Favorites</li>
-                  </Link>
+                    icon={LiaBookSolid}
+                    text={"Favorited Recipes"}
+                  />
 
-                  {/* Will be implemented later on */}
-                  {/* <Link to="/settings">
-                    <li className="px-4 py-2 hover:bg-gray-100">Settings</li>
-                  </Link>*/}
+                  <DropdownLinkItemComponent
+                    path={"my/favorite-authors"}
+                    state={{ userId: user?.id }}
+                    icon={PiChefHatLight}
+                    text={"Favorited Authors"}
+                  />
 
                   <li
                     className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                     onClick={handleLogout}
                   >
-                    Logout
+                    <div className="flex items-center">
+                      <MdLogout className="mr-2" size={20} /> Logout
+                    </div>
                   </li>
                 </ul>
               </div>
