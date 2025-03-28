@@ -19,6 +19,23 @@ namespace Api.Mapper
             };
         }
 
+        public static UserVisitedDto ToUserVisitedDto(this User userModel, string loggedInUserId)
+        {
+            var isFavored = userModel.FavoritedBy?.Any(f => f.UserId == loggedInUserId) ?? false;
+
+            return new UserVisitedDto
+            {
+                Id = userModel.Id,
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Description = userModel.Description,
+                CreatedAt = userModel.CreatedAt,
+                Recipes = userModel?.Recipes?.Select(r => r.ToRecipeDto()).ToList(),
+                FavoriteRecipes = userModel?.FavoriteRecipes,
+                IsFavorited = isFavored
+            };
+        }
+
         public static UserWithRolesDto ToUserWithRolesDto(this User userModel, IList<string?> roles)
         {
             return new UserWithRolesDto

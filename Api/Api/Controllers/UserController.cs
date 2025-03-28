@@ -58,11 +58,21 @@ namespace Api.Controllers
         [HttpGet("visit/{id}")]
         public async Task<IActionResult> GetVisitedUserAsync(string id)
         {
+            var token = Request.Cookies["authToken"];
+
+            if (token == null)
+            {
+                return Unauthorized(new { message = "Not authenticated" });
+            }
+
+            string? loggedInUserId = _claimsHelper.GetLoggedInUserId(token);
+
             User? userModel = await _userManager.Users
                     .Include(u => u.Recipes)
+                    .Include(u => u.FavoritedBy)
                     .FirstOrDefaultAsync(u => u.Id == id);
 
-                return Ok(new { user = userModel?.ToUserDto() });
+                return Ok(new { user = userModel?.ToUserVisitedDto(loggedInUserId) });
         }
 
         [HttpGet("dashboard/users/statistics")]

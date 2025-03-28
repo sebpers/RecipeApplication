@@ -11,6 +11,7 @@ interface User {
   lastName: string;
   description: string;
   recipes: [];
+  isFavorited: boolean;
 }
 
 const AccountPage = () => {
@@ -27,7 +28,6 @@ const AccountPage = () => {
       if (id) {
         try {
           const response = await getVisitedAuthorById(id);
-
           setUser(response.user);
         } catch (error) {
           console.error("Error fetching user:", error);
@@ -52,7 +52,11 @@ const AccountPage = () => {
         />
       </div>
 
-      <AuthorTabComponent setActiveTab={setActiveTab} activeTab={activeTab} />
+      <AuthorTabComponent
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        isFavorited={user?.isFavorited}
+      />
 
       <main className="mt-5">
         <section className="w-auto justify-items-center">
