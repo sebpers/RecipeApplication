@@ -142,6 +142,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
                     className="cursor-pointer"
                     title="Move up"
                   />
+
                   <IoIosArrowDown
                     onClick={() => handleItemOrder(index, 1)}
                     className="cursor-pointer"
@@ -157,6 +158,7 @@ const ListInputComponent = (props: ListInputComponentProps) => {
                   >
                     Edit
                   </button>
+
                   <button
                     type="button"
                     onClick={() => handleDelete(index)}

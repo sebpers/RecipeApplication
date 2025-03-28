@@ -63,7 +63,7 @@ function App() {
           <Route index element={<MyPage />} />
           {/* Only allow admin or author to enter create-recipe route */}
           <Route
-            path=""
+            path="*"
             element={<ProtectedRoute isAuthenticated={isAdminOrAuthor} />}
           >
             <Route path="create-recipe" element={<CreateRecipePage />} />

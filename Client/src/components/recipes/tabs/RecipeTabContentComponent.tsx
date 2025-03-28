@@ -9,7 +9,7 @@ const RecipeTabContentComponent = (props: RecipeTabContentProps) => {
   return (
     <ul className={`${classes} p-3`}>
       {contentArray?.map((ingredient: string, index: number) => (
-        <li className="p-1" key={index}>
+        <li className="rounded shadow-md p-2 mb-5" key={index}>
           {ingredient}
         </li>
       ))}
