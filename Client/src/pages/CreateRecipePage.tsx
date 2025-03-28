@@ -79,7 +79,8 @@ const CreateRecipePage = (props) => {
       ingredients.forEach((ingredient) =>
         formData.append("ingredients", ingredient.trim())
       );
-      ingredients.forEach((instructions) =>
+
+      instructions.forEach((instructions) =>
         formData.append("instructions", instructions.trim())
       );
 
