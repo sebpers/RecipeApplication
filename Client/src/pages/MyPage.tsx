@@ -9,6 +9,7 @@ import SecondaryButtonComponent from "../components/common/buttons/SecondaryButt
 import SubmitButtonComponent from "../components/common/buttons/SubmitButtonComponent";
 import AuthorTabComponent from "../components/authors/page/AuthorTabComponent";
 import { useRoleGuard } from "../hooks/auth/useRoleGuard";
+import DescriptionComponent from "../components/myTabs/DescriptionComponent";
 
 const MyPage = () => {
   const { user } = useAuth();
@@ -18,11 +19,11 @@ const MyPage = () => {
   const [recipes, setRecipes] = useState([]);
   const [showDescriptionDialog, setShowDescriptionDialog] =
     useState<boolean>(false);
-  const [originalDescription, setOriginalDescription] = useState<
-    string | undefined
-  >(user?.description);
-  const [description, setDescription] = useState<string | undefined>(
-    user?.description
+  const [originalDescription, setOriginalDescription] = useState<string>(
+    user?.description ?? ""
+  );
+  const [description, setDescription] = useState<string>(
+    user?.description ?? ""
   );
 
   useRoleGuard(["Author", "Admin"]);
@@ -67,7 +68,7 @@ const MyPage = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    const descriptionToSave = description ?? ""; // Make it certain it's defined
+    const descriptionToSave = description ?? "";
 
     if (user?.id) {
       await updateDescription(descriptionToSave, user?.id);
@@ -107,40 +108,12 @@ const MyPage = () => {
                 </h1>
 
                 <div className="mt-4 italic mx-auto">
-                  {description && !showDescriptionDialog && (
-                    <>
-                      <div className="flex justify-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setOriginalDescription(description); // Save the current value
-                            setShowDescriptionDialog(true);
-                          }}
-                          className="btn-blue-sm text-sm"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                      <p>{description}</p>
-                    </>
-                  )}
-
-                  {!description && !showDescriptionDialog && (
-                    <>
-                      <div className="flex justify-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setOriginalDescription(description); // Save the current value
-                            setShowDescriptionDialog(true);
-                          }}
-                          className="btn-green-sm btn-green-sm:hover text-sm"
-                        >
-                          Add story
-                        </button>
-                      </div>
-                      <p className="mt-3">Nothing here to tell...</p>
-                    </>
+                  {!showDescriptionDialog && (
+                    <DescriptionComponent
+                      setOriginalDescription={setOriginalDescription}
+                      setShowDescriptionDialog={setShowDescriptionDialog}
+                      description={description}
+                    />
                   )}
                 </div>
 

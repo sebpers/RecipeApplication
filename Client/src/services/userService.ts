@@ -107,7 +107,7 @@ export const updateDescription = async (description: string, id: string) => {
         }
       );
 
-      return result.data;
+      return result.data.description;
     }
   } catch (error) {
     console.error("ERROR: ", error);
