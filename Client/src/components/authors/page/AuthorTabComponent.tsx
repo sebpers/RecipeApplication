@@ -12,7 +12,7 @@ const AuthorTabComponent = (props: AuthorTabComponent) => {
 
   const classes = {
     button: "focus:outline-none",
-    active: "text-purple-600",
+    active: "text-red-500",
     inactive: "hover:text-gray-600",
   };
 
